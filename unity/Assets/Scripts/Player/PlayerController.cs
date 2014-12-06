@@ -2,10 +2,15 @@
 
 public class PlayerController : MonoBehaviour {
     #region Variables
-    private Vector2 speed = new Vector2(2.5f, 2f);
+    private Vector2 movementSpeed = new Vector2(30f, 21f);
+    private float   dashMod = 3f;
+    private float   dashDuration = 0.3f;
+    private float   dashDelay = 0.5f;
 
     private Vector3 mousePosition;
     private Vector3 spriteScale;
+    private Vector2 dashForce;
+    private float   dashTimer;
 
     private Animator        animator;
     private new Rigidbody2D rigidbody2D;
@@ -18,6 +23,8 @@ public class PlayerController : MonoBehaviour {
         rigidbody2D = GetComponent<Rigidbody2D>();
         sprite = transform.Find("Sprite").GetComponent<SpriteRenderer>();
         spriteScale = sprite.transform.localScale;
+
+        dashTimer = dashDelay;
     }
     
     void Update () {
@@ -34,9 +41,34 @@ public class PlayerController : MonoBehaviour {
 
     #region Methods
     private void Movement() {
-        // get input and apply movement to rigidbody
-        Vector2 vel = new Vector2(Input.GetAxis("Horizontal") * speed.x, Input.GetAxis("Vertical") * speed.y);
-        rigidbody2D.velocity = vel;
+        Vector2 vel = new Vector2();
+
+        // add dash force instead of WSAD input if dashing
+        if (dashTimer < dashDuration) {
+            vel = dashForce;
+        }
+        // WSAD input
+        else {
+            vel.x = Input.GetAxis("Horizontal") * movementSpeed.x;
+            vel.y = Input.GetAxis("Vertical") * movementSpeed.y;
+        }
+        
+        // calculate dash
+        if (Input.GetButtonDown("Dash") && dashTimer > dashDelay) {
+            Vector2 mouseDir = (transform.position - mousePosition).normalized;
+            dashForce = -new Vector2(movementSpeed.x * mouseDir.x, movementSpeed.y * mouseDir.y) * dashMod;
+            dashTimer = 0;
+        }
+        dashForce -= dashForce * Time.deltaTime / dashDuration;
+        dashTimer += Time.deltaTime;
+
+        // apply movement
+        if (vel != Vector2.zero) {
+            rigidbody2D.AddForce(vel, ForceMode2D.Impulse);
+        }
+
+        // DEBUG
+        MainDebug.WriteLine("Dash Timer", dashTimer.ToString());
     }
 
     private void Rotation() {
