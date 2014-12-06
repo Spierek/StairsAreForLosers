@@ -39,7 +39,7 @@ public class PlayerController : MonoBehaviour {
 
     void OnDrawGizmos() {
         // draw mouse direction
-        Gizmos.color = Color.cyan;
+        Gizmos.color = new Color(0,1,1,0.5f);
         Gizmos.DrawLine(transform.position, mousePosition);
     }
     #endregion
