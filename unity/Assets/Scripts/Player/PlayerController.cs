@@ -1,7 +1,12 @@
 ﻿using UnityEngine;
 
+[RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(BoxCollider2D))]
+[RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour {
     #region Variables
+    public static PlayerController Instance;
+
     public Vector2  movementSpeed = new Vector2(30f, 21f);
     public float    dashMod = 3f;
     public float    dashDuration = 0.25f;
@@ -22,6 +27,8 @@ public class PlayerController : MonoBehaviour {
 
     #region Monobehaviour Methods
     void Awake () {
+        Instance = this;
+
         animator = GetComponent<Animator>();
         rigidbody2D = GetComponent<Rigidbody2D>();
         sprite = transform.Find("Sprite").GetComponent<SpriteRenderer>();
@@ -69,7 +76,7 @@ public class PlayerController : MonoBehaviour {
 
         // apply movement
         if (vel != Vector2.zero) {
-            rigidbody2D.AddForce(vel, ForceMode2D.Impulse);
+            rigidbody2D.AddForce(vel * Time.deltaTime, ForceMode2D.Impulse);
         }
 
         // DEBUG
