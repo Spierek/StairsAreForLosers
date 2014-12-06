@@ -2,10 +2,12 @@
 
 public class PlayerController : MonoBehaviour {
     #region Variables
-    private Vector2 movementSpeed = new Vector2(30f, 21f);
-    private float   dashMod = 3f;
-    private float   dashDuration = 0.3f;
-    private float   dashDelay = 0.5f;
+    public Vector2  movementSpeed = new Vector2(30f, 21f);
+    public float    dashMod = 3f;
+    public float    dashDuration = 0.25f;
+    public float    dashDelay = 0.4f;
+
+    public Weapon   weapon;
 
     private Vector3 mousePosition;
     private Vector3 spriteScale;
@@ -15,6 +17,7 @@ public class PlayerController : MonoBehaviour {
     private Animator        animator;
     private new Rigidbody2D rigidbody2D;
     private SpriteRenderer  sprite;
+    private Hitbox          hitbox;
     #endregion
 
     #region Monobehaviour Methods
@@ -23,6 +26,7 @@ public class PlayerController : MonoBehaviour {
         rigidbody2D = GetComponent<Rigidbody2D>();
         sprite = transform.Find("Sprite").GetComponent<SpriteRenderer>();
         spriteScale = sprite.transform.localScale;
+        hitbox = transform.Find("Hitbox").GetComponent<Hitbox>();
 
         dashTimer = dashDelay;
     }
@@ -30,6 +34,7 @@ public class PlayerController : MonoBehaviour {
     void Update () {
         Movement();
         Rotation();
+        Attack();
     }
 
     void OnDrawGizmos() {
@@ -75,9 +80,29 @@ public class PlayerController : MonoBehaviour {
         mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mousePosition.z = 0;
 
-        // rotate sprite based on mouse position
+        // flip sprite & weapon based on mouse position
         int dir = mousePosition.x >= transform.position.x ? 1 : -1;
         sprite.transform.localScale = new Vector3(spriteScale.x * dir, spriteScale.y);
+        weapon.transform.localScale = new Vector3(weapon.scale.x * dir, weapon.scale.y);
+
+        // rotate weapon
+        weapon.transform.localRotation = Quaternion.Euler(0, 0, GetMouseRotation());
+    }
+
+    private void Attack() {
+        if (Input.GetButtonDown("Attack")) {
+            weapon.Attack();
+        }
+    }
+
+    private float GetMouseRotation() {
+        Vector2 mouseDir = mousePosition - transform.position;
+        float rot = Mathf.Atan2(mouseDir.y, mouseDir.x) * Mathf.Rad2Deg;
+
+        // clamp to (-90; 90) range to compensate for sprite flipping
+        if (rot < -90 || rot > 90)
+            rot += 180;
+        return rot;
     }
     #endregion
 }
