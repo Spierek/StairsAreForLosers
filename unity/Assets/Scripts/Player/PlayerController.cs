@@ -67,7 +67,7 @@ public class PlayerController : MonoBehaviour {
         
         // calculate dash
         if (Input.GetButtonDown("Dash") && dashTimer > dashDelay) {
-            Vector2 mouseDir = (transform.position - mousePosition).normalized;
+            Vector2 mouseDir = GetMouseDirection();
             dashForce = -new Vector2(movementSpeed.x * mouseDir.x, movementSpeed.y * mouseDir.y) * dashMod;
             dashTimer = 0;
         }
@@ -110,6 +110,10 @@ public class PlayerController : MonoBehaviour {
         if (rot < -90 || rot > 90)
             rot += 180;
         return rot;
+    }
+
+    public Vector2 GetMouseDirection() {
+        return (transform.position - mousePosition).normalized;
     }
     #endregion
 }

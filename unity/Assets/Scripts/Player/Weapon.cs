@@ -3,7 +3,8 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour {
     #region Variables
-    protected float attackDelay = 0.3f;
+    protected float attackDelay = 0.4f;
+    protected float damage = 1f;
 
     protected float attackTimer;
     [NonSerialized] public Vector3 scale;
@@ -15,6 +16,7 @@ public class Weapon : MonoBehaviour {
     #region Monobehaviour Methods
     protected virtual void Awake () {
         hitbox = transform.Find("Hitbox").GetComponent<WeaponHitbox>();
+        hitbox.damage = damage;
         scale = transform.localScale;
         animator = GetComponent<Animator>();
     }
@@ -30,7 +32,7 @@ public class Weapon : MonoBehaviour {
     #region Methods
     public void Attack() {
         if (attackTimer > attackDelay) {
-            hitbox.Attack(0.1f);
+            hitbox.Attack(0.15f);
             attackTimer = 0;
             animator.SetBool("isAttacking", true);
         }

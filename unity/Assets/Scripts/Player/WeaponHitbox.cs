@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class WeaponHitbox : MonoBehaviour {
     #region Variables
     private new Collider2D collider2D;
+    [NonSerialized] public float damage;
     #endregion
 
     #region Monobehaviour Methods
