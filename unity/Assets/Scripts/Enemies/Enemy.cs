@@ -73,6 +73,7 @@ public class Enemy : Entity {
         // calculate force
         Vector2 mouseDir = PlayerController.Instance.GetMouseDirection();
         pushbackForce = -new Vector2(movementSpeed.x * mouseDir.x, movementSpeed.y * mouseDir.y) * pushbackMod;
+        rigidbody2D.AddForce(pushbackForce, ForceMode2D.Impulse);
 
         pushbackTimer = 0;
         state = EnemyState.WasHit;
@@ -82,9 +83,6 @@ public class Enemy : Entity {
     }
 
     protected virtual void Pushback() {
-        // apply force
-        rigidbody2D.AddForce(pushbackForce, ForceMode2D.Impulse);
-        pushbackForce -= pushbackForce * Time.deltaTime / pushbackDuration;
         pushbackTimer += Time.deltaTime;
 
         if (pushbackTimer > pushbackDuration) {
@@ -92,7 +90,7 @@ public class Enemy : Entity {
         }
 
         // slowly reset sprite color
-        float fade = Time.deltaTime * 3f;
+        float fade = Time.deltaTime * 4f;
         sprite.color = new Color(1f, sprite.color.g + fade, sprite.color.b + fade, 1f);
     }
 

@@ -64,6 +64,7 @@ public class PlayerController : MonoBehaviour {
             vel.x = Input.GetAxis("Horizontal") * movementSpeed.x;
             vel.y = Input.GetAxis("Vertical") * movementSpeed.y;
         }
+        MainDebug.WriteLine("vel", vel.ToString());
         
         // calculate dash
         if (Input.GetButtonDown("Dash") && dashTimer > dashDelay) {
