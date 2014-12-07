@@ -17,10 +17,6 @@ public class Bat : Enemy {
     #region Monobehaviour Methods
     protected override void Awake() {
         base.Awake();
-        movementSpeed = new Vector2(6f, 4f);
-        health = 1.2f;
-        pushbackMod = 1.5f;
-        pushbackDuration = 0.3f;
         state = EnemyState.Idle;
 
         dirTimer = dirDelayRange.y;

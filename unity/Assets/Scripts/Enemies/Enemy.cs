@@ -10,10 +10,10 @@ public enum EnemyState {
 [RequireComponent(typeof(Rigidbody2D))]
 public class Enemy : Entity {
     #region Variables
-    protected Vector2           movementSpeed;
-    protected float             health;
-    protected float             pushbackMod;
-    protected float             pushbackDuration;
+    public Vector2              movementSpeed;
+    public float                health;
+    public float                pushbackMod;
+    public float                pushbackDuration;
 
     protected EnemyState        state;
     protected Vector3           spriteScale;
@@ -29,8 +29,8 @@ public class Enemy : Entity {
     protected virtual void Awake () {
         animator = GetComponent<Animator>();
         rigidbody2D = GetComponent<Rigidbody2D>();
-        sprite = transform.Find("Sprite").GetComponent<SpriteRenderer>();
-        spriteScale = sprite.transform.localScale;
+        sprite = transform.Find("SpriteContainer").Find("Sprite").GetComponent<SpriteRenderer>();
+        spriteScale = sprite.transform.parent.localScale;
     }
     
     protected virtual void Update () {
@@ -60,7 +60,7 @@ public class Enemy : Entity {
     protected virtual void Rotate() {
         // flip sprite
         int dir = rigidbody2D.velocity.x >= 0 ? 1 : -1;
-        sprite.transform.localScale = new Vector3(spriteScale.x * dir, spriteScale.y);
+        sprite.transform.parent.localScale = new Vector3(spriteScale.x * dir, spriteScale.y);
     }
 
     protected virtual void Attack() {
@@ -68,13 +68,6 @@ public class Enemy : Entity {
     }
 
     public virtual void Hit(float damage) {
-        // apply damage
-        health -= damage;
-        if (health < 0) {
-            Die();
-            return;
-        }
-
         // calculate force
         Vector2 mouseDir = PlayerController.Instance.GetMouseDirection();
         pushbackForce = -new Vector2(movementSpeed.x * mouseDir.x, movementSpeed.y * mouseDir.y) * pushbackMod;
@@ -86,6 +79,12 @@ public class Enemy : Entity {
         // set sprite color to red
         sprite.material.color = new Color(1f, 0.3f, 0.3f, 1f);
         sprite.material.DOColor(Color.white, 0.5f);
+
+        // apply damage
+        health -= damage;
+        if (health <= 0) {
+            Die();
+        }
     }
 
     protected virtual void Pushback() {

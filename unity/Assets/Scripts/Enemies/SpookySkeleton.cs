@@ -7,10 +7,6 @@ public class SpookySkeleton : Enemy {
     #region Monobehaviour Methods
     protected override void Awake() {
         base.Awake();
-        movementSpeed = new Vector2(6f, 4f);
-        health = 1.2f;
-        pushbackMod = 1f;
-        pushbackDuration = 0.2f;
         state = EnemyState.Follow;
     }
     #endregion
