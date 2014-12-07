@@ -71,8 +71,8 @@ public class Enemy : Entity {
     public virtual void Hit(float damage) {
         // calculate force
         Vector2 mouseDir = PlayerController.Instance.GetMouseDirection();
-        pushbackForce = -new Vector2(movementSpeed.x * mouseDir.x, movementSpeed.y * mouseDir.y) * pushbackMod;
-        rigidbody2D.AddForce(pushbackForce, ForceMode2D.Impulse);
+        pushbackForce = -new Vector2(movementSpeed.x * mouseDir.x, movementSpeed.y * mouseDir.y);
+        rigidbody2D.AddForce(pushbackForce * pushbackMod, ForceMode2D.Impulse);
 
         pushbackTimer = 0;
         state = EnemyState.WasHit;

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 public enum SpiderState {
-    Follow, DropDown, Idle, WasHit, PullUp
+    Follow, DropDown, Idle, WasHit, PullUp, Dead
 }
 
 public class Spider : Enemy {
@@ -39,6 +39,10 @@ public class Spider : Enemy {
             animator.SetInteger("state", (int)spiderState);
             state = EnemyState.Idle;
         }
+        else if (state == EnemyState.Dead && spiderState != SpiderState.Dead) {
+            rigidbody2D.AddForce(pushbackForce * 0.7f, ForceMode2D.Impulse);
+            spiderState = SpiderState.Dead;
+        }
         // spider state machine
         else {
             switch (spiderState) {
@@ -54,25 +58,30 @@ public class Spider : Enemy {
                     break;
                 case SpiderState.Idle:
                     if (timer > idleDuration) {
-                        timer = 0; // TODO: this will potentially allow the spider to pull up and move at the same time
-                        spiderState = SpiderState.PullUp;
+                        timer = 0.5f;
                         idleDuration = Random.Range(idleDurationRange.x, idleDurationRange.y);
+                        spiderState = SpiderState.PullUp;
                     }
                     break;
                 case SpiderState.WasHit:
+                    timer = 0; // FIXME: allows the spider to pull up and move at the same time
+                    idleDuration = Random.Range(idleDurationRange.x, idleDurationRange.y);
                     spiderState = SpiderState.PullUp;
                     break;
                 case SpiderState.PullUp:
-                    spiderState = SpiderState.Follow;
+                    if (timer > 0.5f) {
+                        spiderState = SpiderState.Follow;
+                        timer = 0;
 
-                    // choose a random direction
-                    dir = Random.insideUnitSphere;
-                    dir = dir.normalized;
+                        // choose a random direction
+                        dir = Random.insideUnitSphere;
+                        dir = dir.normalized;
 
-                    // modify speed
-                    dir.x *= movementSpeed.x;
-                    dir.y *= movementSpeed.y;
-                    dir *= Time.deltaTime;
+                        // modify speed
+                        dir.x *= movementSpeed.x;
+                        dir.y *= movementSpeed.y;
+                        dir *= Time.deltaTime;
+                    }
                     break;
             }
         }
@@ -91,8 +100,8 @@ public class Spider : Enemy {
 
     protected override void Rotate() {
         // flip sprite
-        int dir = PlayerController.Instance.transform.position.x >= transform.position.x ? 1 : -1;
-        sprite.transform.parent.localScale = new Vector3(spriteScale.x * dir, spriteScale.y);
+        int flip = PlayerController.Instance.transform.position.x >= transform.position.x ? 1 : -1;
+        sprite.transform.parent.localScale = new Vector3(spriteScale.x * flip, spriteScale.y);
     }
     #endregion
 }
