@@ -4,14 +4,12 @@ public class Bat : Enemy {
     #region Variables
     private Vector2 dirDelayRange = new Vector2(1f, 2f);
     private Vector2 dirDurationRange = new Vector2(1f, 2f);
-    private Vector2 dirLerpDurationRange = new Vector2(0.3f, 0.5f);
 
     private Vector2 dir;
     private Vector2 prevDir;
     private float dirTimer;
     private float dirDelay;
     private float dirDuration;
-    private float dirLerpDuration;
 
     //private Vector2 playerDir;
     #endregion
@@ -19,10 +17,10 @@ public class Bat : Enemy {
     #region Monobehaviour Methods
     protected override void Awake() {
         base.Awake();
-        movementSpeed = new Vector2(800f, 600f);
+        movementSpeed = new Vector2(6f, 4f);
         health = 1.2f;
-        pushbackMod = 0.15f;
-        pushbackDuration = 0.2f;
+        pushbackMod = 1.5f;
+        pushbackDuration = 0.3f;
         state = EnemyState.Idle;
 
         dirTimer = dirDelayRange.y;
@@ -41,6 +39,7 @@ public class Bat : Enemy {
         if (dirTimer > dirDelay) {
             prevDir = dir;
             dir = Random.insideUnitSphere;
+            dir = dir.normalized;
 
             // modify speed
             dir.x *= movementSpeed.x;
@@ -51,18 +50,20 @@ public class Bat : Enemy {
             dirTimer = 0;
             dirDelay = Random.Range(dirDelayRange.x, dirDelayRange.y);
             dirDuration = Random.Range(dirDurationRange.x, dirDurationRange.y);
-            dirLerpDuration = Random.Range(dirLerpDurationRange.x, dirLerpDurationRange.y);
         }
         
         // apply force while lerping between old and new directions, with a small delay between direction changes
         if (dirTimer < dirDuration) {
-            rigidbody2D.AddForce(MainDebug.LerpVector2(prevDir, dir, dirTimer / dirLerpDuration), ForceMode2D.Impulse);
+            rigidbody2D.AddForce(MainDebug.LerpVector2(prevDir, dir, dirTimer / dirDuration), ForceMode2D.Impulse);
         }
-        // TODO: add some dicking around when standing still
+        else {
+            dir = MainDebug.LerpVector2(dir, Vector2.zero, (dirTimer - dirDuration) / (dirDelay - dirDuration));
+            rigidbody2D.AddForce(MainDebug.LerpVector2(prevDir, dir, dirTimer), ForceMode2D.Impulse);
+        }
 
         dirTimer += Time.deltaTime;
 
-        Debug.DrawRay(transform.position, MainDebug.LerpVector2(prevDir, dir, dirTimer / dirLerpDuration), Color.red);      //DEBUG: direction
+        Debug.DrawRay(transform.position, MainDebug.LerpVector2(prevDir, dir, dirTimer), Color.red);      //DEBUG: direction
     }
     #endregion
 }
