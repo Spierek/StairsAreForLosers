@@ -14,15 +14,14 @@ public class WeaponHitbox : MonoBehaviour {
     }
 
     private void OnTriggerEnter2D(Collider2D coll) {
-        MainDebug.WriteLine("HIT!", 2f);
-        if(coll.gameObject.layer == LayerMask.NameToLayer("Column"))
-        {
+        if(coll.gameObject.layer == LayerMask.NameToLayer("Column")) {
             Column col = coll.transform.parent.gameObject.GetComponent<Column>();
             col.HP--;
             if (col.HP < 0) {
                 Map.instance.DemolishChunk(col.ID);
                 Destroy(col.gameObject);
             }
+            MainDebug.WriteLine("Column hit!", 2f);
         }
     }
     #endregion
