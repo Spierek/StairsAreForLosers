@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using DG.Tweening;
+using UnityEngine;
 
 public enum EnemyState {
     Idle, Follow, Attack, WasHit, Dead
@@ -79,7 +80,8 @@ public class Enemy : Entity {
         state = EnemyState.WasHit;
 
         // set sprite color to red
-        sprite.color = new Color(1f, 0.3f, 0.3f, 1f);
+        sprite.material.color = new Color(1f, 0.3f, 0.3f, 1f);
+        sprite.material.DOColor(Color.white, 0.5f);
     }
 
     protected virtual void Pushback() {
@@ -88,10 +90,6 @@ public class Enemy : Entity {
         if (pushbackTimer > pushbackDuration) {
             state = EnemyState.Follow;
         }
-
-        // slowly reset sprite color
-        float fade = Time.deltaTime * 4f;
-        sprite.color = new Color(1f, sprite.color.g + fade, sprite.color.b + fade, 1f);
     }
 
     protected virtual void Die() {

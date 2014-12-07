@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using DG.Tweening;
 
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(BoxCollider2D))]
@@ -13,6 +14,8 @@ public class PlayerController : MonoBehaviour {
     public float    dashDelay = 0.4f;
 
     public Weapon   weapon;
+
+    private int     health = 8;
 
     private Vector3 mousePosition;
     private Vector3 spriteScale;
@@ -42,6 +45,12 @@ public class PlayerController : MonoBehaviour {
         Movement();
         Rotation();
         Attack();
+        // DEBUG: healthbar
+        string hp = "";
+        for (int i = 0; i < health; i++) {
+            hp += "♥";
+        }
+        MainDebug.WriteLine("Health", hp);
     }
 
     void OnDrawGizmos() {
@@ -101,6 +110,19 @@ public class PlayerController : MonoBehaviour {
         if (Input.GetButtonDown("Attack")) {
             weapon.Attack();
         }
+    }
+
+    public void Hit(int damage, Vector3 position) {
+        Vector2 dir = (transform.position - position).normalized;
+        rigidbody2D.AddForce(new Vector2(movementSpeed.x * dir.x, movementSpeed.y * dir.y) * 0.6f, ForceMode2D.Impulse);
+
+        // flash color
+        sprite.material.color = new Color(1f, 0.3f, 0.3f, 1f);
+        sprite.material.DOColor(Color.white, 0.5f);
+
+        if (health > 0)
+            health -= damage;
+        // TODO: game over on 0HP
     }
 
     private float GetMouseRotation() {
