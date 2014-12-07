@@ -31,6 +31,8 @@ public class Enemy : Entity {
     }
     
     protected virtual void Update () {
+        CheckState();
+
         if (state == EnemyState.WasHit) {
             Pushback();
         }
@@ -42,6 +44,10 @@ public class Enemy : Entity {
     #endregion
 
     #region Methods
+    protected virtual void CheckState() {
+        
+    }
+
     protected virtual void Movement() {
         
     }

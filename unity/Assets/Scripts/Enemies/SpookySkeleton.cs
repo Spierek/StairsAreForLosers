@@ -16,6 +16,10 @@ public class SpookySkeleton : Enemy {
     #endregion
 
     #region Methods
+    protected override void CheckState() {
+        base.CheckState();
+    }
+
     protected override void Movement() {
         // get direction to player
         Vector2 playerDist = PlayerController.Instance.transform.position - transform.position;
