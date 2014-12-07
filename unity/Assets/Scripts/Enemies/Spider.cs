@@ -7,7 +7,7 @@ public enum SpiderState {
 public class Spider : Enemy {
     #region Variables
     private Vector2 followDurationRange = new Vector2(2f, 5f);
-    private Vector2 idleDurationRange = new Vector2(0.8f, 1f);
+    private Vector2 idleDurationRange = new Vector2(2f, 3f);
 
     private SpiderState spiderState;
     private Vector2 dir;
@@ -33,39 +33,48 @@ public class Spider : Enemy {
         //MainDebug.WriteLine("timer", timer.ToString());
         //MainDebug.WriteLine("follow", followDuration.ToString());
 
-        switch (spiderState) {
-            case SpiderState.Follow:
-                if (timer > followDuration) {
-                    timer = 0;
-                    spiderState = SpiderState.DropDown;
-                    followDuration = Random.Range(followDurationRange.x, followDurationRange.y);
-                }
-                break;
-            case SpiderState.DropDown:
-                spiderState = SpiderState.Idle;
-                break;
-            case SpiderState.Idle:
-                if (timer > idleDuration) {
-                    timer = 0;      // TODO: this will potentially allow the spider to pull up and move at the same time
+        // convert base enemy state to spider state
+        if (state == EnemyState.WasHit) {
+            spiderState = SpiderState.WasHit;
+            animator.SetInteger("state", (int)spiderState);
+            state = EnemyState.Idle;
+        }
+        // spider state machine
+        else {
+            switch (spiderState) {
+                case SpiderState.Follow:
+                    if (timer > followDuration) {
+                        timer = 0;
+                        spiderState = SpiderState.DropDown;
+                        followDuration = Random.Range(followDurationRange.x, followDurationRange.y);
+                    }
+                    break;
+                case SpiderState.DropDown:
+                    spiderState = SpiderState.Idle;
+                    break;
+                case SpiderState.Idle:
+                    if (timer > idleDuration) {
+                        timer = 0; // TODO: this will potentially allow the spider to pull up and move at the same time
+                        spiderState = SpiderState.PullUp;
+                        idleDuration = Random.Range(idleDurationRange.x, idleDurationRange.y);
+                    }
+                    break;
+                case SpiderState.WasHit:
                     spiderState = SpiderState.PullUp;
-                    idleDuration = Random.Range(idleDurationRange.x, idleDurationRange.y);
-                }
-                break;
-            case SpiderState.WasHit:
-                spiderState = SpiderState.PullUp;
-                break;
-            case SpiderState.PullUp:
-                spiderState = SpiderState.Follow;
+                    break;
+                case SpiderState.PullUp:
+                    spiderState = SpiderState.Follow;
 
-                // choose a random direction
-                dir = Random.insideUnitSphere;
-                dir = dir.normalized;
+                    // choose a random direction
+                    dir = Random.insideUnitSphere;
+                    dir = dir.normalized;
 
-                // modify speed
-                dir.x *= movementSpeed.x;
-                dir.y *= movementSpeed.y;
-                dir *= Time.deltaTime;
-                break;
+                    // modify speed
+                    dir.x *= movementSpeed.x;
+                    dir.y *= movementSpeed.y;
+                    dir *= Time.deltaTime;
+                    break;
+            }
         }
 
         animator.SetInteger("state", (int)spiderState);
@@ -78,6 +87,12 @@ public class Spider : Enemy {
             rigidbody2D.AddForce(dir, ForceMode2D.Impulse);
             Debug.DrawRay(transform.position, dir, Color.red);      //DEBUG: direction
         }
+    }
+
+    protected override void Rotate() {
+        // flip sprite
+        int dir = PlayerController.Instance.transform.position.x >= transform.position.x ? 1 : -1;
+        sprite.transform.parent.localScale = new Vector3(spriteScale.x * dir, spriteScale.y);
     }
     #endregion
 }

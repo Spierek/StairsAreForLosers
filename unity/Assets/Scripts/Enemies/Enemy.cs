@@ -1,5 +1,6 @@
 ﻿using DG.Tweening;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum EnemyState {
     Idle, Follow, Attack, WasHit, Dead
