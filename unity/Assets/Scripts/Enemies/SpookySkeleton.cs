@@ -8,6 +8,9 @@ public class SpookySkeleton : Enemy {
     protected override void Awake() {
         base.Awake();
         movementSpeed = new Vector2(500f, 300f);
+        pushbackMod = 0.1f;
+        pushbackDuration = 0.2f;
+        state = EnemyState.Follow;
     }
     #endregion
 

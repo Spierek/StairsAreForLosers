@@ -1,17 +1,25 @@
 ﻿using UnityEngine;
 
+public enum EnemyState {
+    Idle, Follow, Attack, WasHit, Dead
+};
+
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(BoxCollider2D))]
 [RequireComponent(typeof(Rigidbody2D))]
 public class Enemy : MonoBehaviour {
     #region Variables
     protected Vector2           movementSpeed;
+    protected float             pushbackMod;
+    protected float             pushbackDuration;
 
+    protected EnemyState        state;
     protected Vector3           spriteScale;
+    protected Vector3           pushbackForce;
+    protected float             pushbackTimer;
 
     protected new Rigidbody2D   rigidbody2D;
     protected SpriteRenderer    sprite;
-
     #endregion
 
     #region Monobehaviour Methods
@@ -22,8 +30,13 @@ public class Enemy : MonoBehaviour {
     }
     
     protected virtual void Update () {
-        Movement();
-        Rotate();
+        if (state == EnemyState.WasHit) {
+            ApplyPushback();
+        }
+        else {
+            Movement();
+            Rotate(); 
+        }
     }
     #endregion
 
@@ -40,6 +53,33 @@ public class Enemy : MonoBehaviour {
 
     protected virtual void Attack() {
         
+    }
+
+    public virtual void Pushback() {
+        // calculate force
+        Vector2 mouseDir = PlayerController.Instance.GetMouseDirection();
+        pushbackForce = -new Vector2(movementSpeed.x * mouseDir.x, movementSpeed.y * mouseDir.y) * pushbackMod;
+
+        pushbackTimer = 0;
+        state = EnemyState.WasHit;
+
+        // set sprite color to red
+        sprite.color = new Color(1f, 0.3f, 0.3f, 1f);
+    }
+
+    protected virtual void ApplyPushback() {
+        // apply force
+        rigidbody2D.AddForce(pushbackForce, ForceMode2D.Impulse);
+        pushbackForce -= pushbackForce * Time.deltaTime / pushbackDuration;
+        pushbackTimer += Time.deltaTime;
+
+        if (pushbackTimer > pushbackDuration) {
+            state = EnemyState.Follow;
+        }
+
+        // slowly reset sprite color
+        float fade = Time.deltaTime * 3f;
+        sprite.color = new Color(1f, sprite.color.g + fade, sprite.color.b + fade, 1f);
     }
     #endregion
 }
