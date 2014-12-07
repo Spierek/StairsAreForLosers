@@ -7,7 +7,7 @@ public enum EnemyState {
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(CircleCollider2D))]
 [RequireComponent(typeof(Rigidbody2D))]
-public class Enemy : MonoBehaviour {
+public class Enemy : Entity {
     #region Variables
     protected Vector2           movementSpeed;
     protected float             health;

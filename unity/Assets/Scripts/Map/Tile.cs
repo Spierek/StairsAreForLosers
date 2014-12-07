@@ -3,7 +3,7 @@ using System.Collections;
 
 using DG.Tweening;
 
-public class Tile : MonoBehaviour {
+public class Tile : Entity {
 
     public Vector2 location;
     public float lateParticleEffect;
@@ -12,8 +12,6 @@ public class Tile : MonoBehaviour {
     public ParticleSystem particles;
     public GameObject succesor;
     public GameObject precedesor;
-    public bool doNotTween;
-    public Vector3 finalPosition;
     public bool spawnColumn;
     private bool isDying;
 
@@ -25,20 +23,15 @@ public class Tile : MonoBehaviour {
         spawnTileTimer = lateParticleEffect + 1f;
     }
 
-    public void TileFallen()
+    protected override void OnFallen()
     {
         Destroy(precedesor);
     }
 
 	// Use this for initialization
-	void Start () {
-        particles = GetComponentInChildren<ParticleSystem>();
-        if (!doNotTween)
-        {
-            transform.DOMove(finalPosition, 0.5f).OnComplete(TileFallen).SetEase(Ease.InQuint);
-            GetComponent<SpriteRenderer>().material.DOColor(new Color(1f,1f,1f,1f), 0.5f);
-        }
-            
+	protected override void Start () {
+        base.Start();
+        particles = GetComponentInChildren<ParticleSystem>();            
 	}
 	
 	// Update is called once per frame
