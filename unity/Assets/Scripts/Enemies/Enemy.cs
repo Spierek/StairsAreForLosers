@@ -20,12 +20,14 @@ public class Enemy : Entity {
     protected Vector3           pushbackForce;
     protected float             pushbackTimer;
 
+    protected Animator          animator;
     protected new Rigidbody2D   rigidbody2D;
     protected SpriteRenderer    sprite;
     #endregion
 
     #region Monobehaviour Methods
     protected virtual void Awake () {
+        animator = GetComponent<Animator>();
         rigidbody2D = GetComponent<Rigidbody2D>();
         sprite = transform.Find("Sprite").GetComponent<SpriteRenderer>();
         spriteScale = sprite.transform.localScale;
@@ -34,12 +36,14 @@ public class Enemy : Entity {
     protected virtual void Update () {
         CheckState();
 
-        if (state == EnemyState.WasHit) {
-            Pushback();
-        }
-        else {
-            Movement();
-            Rotate(); 
+        if (state != EnemyState.Dead) {
+            if (state == EnemyState.WasHit) {
+                Pushback();
+            }
+            else {
+                Movement();
+                Rotate(); 
+            }
         }
     }
     #endregion
@@ -94,7 +98,10 @@ public class Enemy : Entity {
 
     protected virtual void Die() {
         MainDebug.WriteLine("ded", 2f);
-        Destroy(gameObject);
+        state = EnemyState.Dead;
+        animator.SetBool("isDead", true);
+        sprite.material.DOColor(new Color(0.5f, 0.5f, 0.5f, 1f), 0.5f);
+        Destroy(gameObject, 3f);
     }
     #endregion
 }
