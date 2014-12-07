@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public class Map : MonoBehaviour {
 
     public String[] indexcolors = new String[]{
-        "000000", "FFFF00", "1CE6FF", "FF34FF", "FF4A46", "008941", "006FA6", "A30059",
+        "FFFFFF", "FFFF00", "1CE6FF", "FF34FF", "FF4A46", "008941", "006FA6", "A30059",
         "FFDBE5", "7A4900", "0000A6", "63FFAC", "B79762", "004D43", "8FB0FF", "997D87",
         "5A0007", "809693", "FEFFE6", "1B4400", "4FC601", "3B5DFF", "4A3B53", "FF2F80",
         "61615A", "BA0900", "6B7900", "00C2A0", "FFAA92", "FF90C9", "B903AA", "D16100",
@@ -44,6 +44,11 @@ public class Map : MonoBehaviour {
         
     }
 
+    public Color GetIndexColor(int i)
+    {
+        return HexToColor(indexcolors[i]);
+    }
+
     Color HexToColor(string hex)
     {
         byte r = byte.Parse(hex.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
@@ -71,8 +76,10 @@ public class Map : MonoBehaviour {
                 }
                 
             }
+
         floors[0].RewriteEntities(entitiesToDrop, floors[1]);
-        floors[0].ToDebug();
+
+        foreach (Floor floor in floors) floor.ToDebug();
     }
 
     public void GenerateTiles(Floor floor)
@@ -86,7 +93,8 @@ public class Map : MonoBehaviour {
                 GameObject tile = Instantiate(tilePrefab, new Vector3((x * tileSpacing) - mapSize.x/2, (y * tileSpacing) - mapSize.y/2, 0f), Quaternion.identity) as GameObject;
                 tile.transform.parent = floorRoot.transform;
                 tile.name = "[" + x.ToString() + "," + y.ToString() + "]";
-                tile.GetComponent<SpriteRenderer>().color = HexToColor(indexcolors[Convert.ToInt32(floor.chunksMap[x, y])]);
+               // tile.GetComponent<SpriteRenderer>().color = HexToColor(indexcolors[Convert.ToInt32(floor.chunksMap[x, y])]);
+                tile.GetComponent<Tile>().location = new Vector2(x, y);
                 tile.GetComponent<Tile>().doNotTween = true;
                 if (floor.columnsMap[x, y] > 0)
                 {
@@ -97,7 +105,8 @@ public class Map : MonoBehaviour {
                     column.transform.parent = floorRoot.transform;
                     column.name = "Column[" + floor.columnsMap[x, y].ToString() + "]";
                     column.GetComponent<Column>().ID = floor.columnsMap[x, y];
-                    column.GetComponentInChildren<SpriteRenderer>().color = HexToColor(indexcolors[Convert.ToInt32(floor.columnsMap[x, y])]);
+                    column.GetComponent<Column>().doNotTween = true;
+                   // column.GetComponentInChildren<SpriteRenderer>().color = HexToColor(indexcolors[Convert.ToInt32(floor.columnsMap[x, y])]);
                 }
             }
     }
@@ -109,6 +118,8 @@ public class Map : MonoBehaviour {
         floors = new List<Floor>();
         floors.Add(new Floor(2));
         floors.Add(new Floor(2));
+        floors.Add(new Floor(2));
+        floors.Add(new Floor(2, true));
         GenerateTiles(floors[0]);
 	}
 	

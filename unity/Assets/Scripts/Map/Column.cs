@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Column : MonoBehaviour {
+public class Column : Entity {
 
     public int HP;
     public int ID;
