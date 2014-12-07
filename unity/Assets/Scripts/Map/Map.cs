@@ -33,6 +33,8 @@ public class Map : MonoBehaviour {
     public GameObject tilePrefab;
     public GameObject columnPrefab;
 
+    public GameObject skeletonPrefab;
+
     public int floorCount;
 
     public float tileSpacing;
@@ -56,6 +58,23 @@ public class Map : MonoBehaviour {
         
     }
 
+    public void DemolishChunk(int nr)
+    {
+        List<Vector2> entitiesToDrop = new List<Vector2>();
+        for (int x = 0; x < mapSize.x; x++)
+            for (int y = 0; y < mapSize.y; y++)
+            {
+                if (floors[0].chunksMap[x, y] == nr) 
+                {
+                    GameObject.Find("[" + x + "," + y + "]").GetComponent<Tile>().initDeath();
+                    entitiesToDrop.Add(new Vector2(x, y));
+                }
+                
+            }
+        floors[0].RewriteEntities(entitiesToDrop, floors[1]);
+        floors[0].ToDebug();
+    }
+
     public void GenerateTiles(Floor floor)
     {
         GameObject floorRoot = new GameObject();
@@ -68,12 +87,17 @@ public class Map : MonoBehaviour {
                 tile.transform.parent = floorRoot.transform;
                 tile.name = "[" + x.ToString() + "," + y.ToString() + "]";
                 tile.GetComponent<SpriteRenderer>().color = HexToColor(indexcolors[Convert.ToInt32(floor.chunksMap[x, y])]);
+                tile.GetComponent<Tile>().doNotTween = true;
                 if (floor.columnsMap[x, y] > 0)
                 {
-                    GameObject column = Instantiate(columnPrefab, new Vector3((x * tileSpacing) - mapSize.x / 2, (y * tileSpacing) - mapSize.y / 2, -1f), Quaternion.identity) as GameObject;
+                    GameObject column = Instantiate(columnPrefab, new Vector3((x * tileSpacing) - mapSize.x / 2 - (tileSpacing * (floor.a % 2))
+                                                                             , (y * tileSpacing) - mapSize.y / 2 - (tileSpacing * (floor.a % 2))
+                                                                             , -1f),
+                                                                             Quaternion.identity) as GameObject;
                     column.transform.parent = floorRoot.transform;
                     column.name = "Column[" + floor.columnsMap[x, y].ToString() + "]";
-                    column.GetComponent<SpriteRenderer>().color = HexToColor(indexcolors[Convert.ToInt32(floor.columnsMap[x, y])]);
+                    column.GetComponent<Column>().ID = floor.columnsMap[x, y];
+                    column.GetComponentInChildren<SpriteRenderer>().color = HexToColor(indexcolors[Convert.ToInt32(floor.columnsMap[x, y])]);
                 }
             }
     }
@@ -81,8 +105,11 @@ public class Map : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         instance = this;
-        Floor test = new Floor(3);
-        GenerateTiles(test);
+        GenerateFloors();
+        floors = new List<Floor>();
+        floors.Add(new Floor(2));
+        floors.Add(new Floor(2));
+        GenerateTiles(floors[0]);
 	}
 	
 	// Update is called once per frame
