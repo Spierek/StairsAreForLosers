@@ -10,6 +10,7 @@ public enum EnemyState {
 public class Enemy : MonoBehaviour {
     #region Variables
     protected Vector2           movementSpeed;
+    protected float             health;
     protected float             pushbackMod;
     protected float             pushbackDuration;
 
@@ -31,7 +32,7 @@ public class Enemy : MonoBehaviour {
     
     protected virtual void Update () {
         if (state == EnemyState.WasHit) {
-            ApplyPushback();
+            Pushback();
         }
         else {
             Movement();
@@ -55,7 +56,14 @@ public class Enemy : MonoBehaviour {
         
     }
 
-    public virtual void Pushback() {
+    public virtual void Hit(float damage) {
+        // apply damage
+        health -= damage;
+        if (health < 0) {
+            Die();
+            return;
+        }
+
         // calculate force
         Vector2 mouseDir = PlayerController.Instance.GetMouseDirection();
         pushbackForce = -new Vector2(movementSpeed.x * mouseDir.x, movementSpeed.y * mouseDir.y) * pushbackMod;
@@ -67,7 +75,7 @@ public class Enemy : MonoBehaviour {
         sprite.color = new Color(1f, 0.3f, 0.3f, 1f);
     }
 
-    protected virtual void ApplyPushback() {
+    protected virtual void Pushback() {
         // apply force
         rigidbody2D.AddForce(pushbackForce, ForceMode2D.Impulse);
         pushbackForce -= pushbackForce * Time.deltaTime / pushbackDuration;
@@ -80,6 +88,11 @@ public class Enemy : MonoBehaviour {
         // slowly reset sprite color
         float fade = Time.deltaTime * 3f;
         sprite.color = new Color(1f, sprite.color.g + fade, sprite.color.b + fade, 1f);
+    }
+
+    protected virtual void Die() {
+        MainDebug.WriteLine("ded", 2f);
+        Destroy(gameObject);
     }
     #endregion
 }

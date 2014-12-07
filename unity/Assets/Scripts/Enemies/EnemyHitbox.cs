@@ -13,9 +13,11 @@ public class EnemyHitbox : MonoBehaviour {
         collider2D = GetComponent<Collider2D>();
     }
 
-    private void OnTriggerEnter2D() {
-        MainDebug.WriteLine("WAS HIT!", 2f);
-        enemy.Pushback();
+    private void OnTriggerEnter2D(Collider2D col) {
+        // TODO: possibly redundant check since EnemyHitbox can only collide with weapons
+        if (col.gameObject.layer == LayerMask.NameToLayer("Weapon")) {
+            enemy.Hit(col.GetComponent<WeaponHitbox>().damage);
+        }
     }
     #endregion
 
