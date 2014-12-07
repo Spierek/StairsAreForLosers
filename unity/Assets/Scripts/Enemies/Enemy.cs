@@ -5,7 +5,7 @@ public enum EnemyState {
 };
 
 [RequireComponent(typeof(Animator))]
-[RequireComponent(typeof(BoxCollider2D))]
+[RequireComponent(typeof(CircleCollider2D))]
 [RequireComponent(typeof(Rigidbody2D))]
 public class Enemy : MonoBehaviour {
     #region Variables
