@@ -74,6 +74,10 @@ public class MainDebug : MonoBehaviour {
                 text.AppendLine(textList[i].text);
         }
     }
+
+    public static Vector2 LerpVector2(Vector2 a, Vector2 b, float t) {
+        return new Vector2 {x = Mathf.Lerp(a.x, b.x, t), y = Mathf.Lerp(a.y, b.y, t)};
+    }
     #endregion
 }
 

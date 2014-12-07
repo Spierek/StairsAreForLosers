@@ -7,7 +7,7 @@ public enum EnemyState {
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(CircleCollider2D))]
 [RequireComponent(typeof(Rigidbody2D))]
-public class Enemy : MonoBehaviour {
+public class Enemy : Entity {
     #region Variables
     protected Vector2           movementSpeed;
     protected float             health;
@@ -31,6 +31,8 @@ public class Enemy : MonoBehaviour {
     }
     
     protected virtual void Update () {
+        CheckState();
+
         if (state == EnemyState.WasHit) {
             Pushback();
         }
@@ -42,6 +44,10 @@ public class Enemy : MonoBehaviour {
     #endregion
 
     #region Methods
+    protected virtual void CheckState() {
+        
+    }
+
     protected virtual void Movement() {
         
     }
