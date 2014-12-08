@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour {
     public float    dashMod = 3f;
     public float    dashDuration = 0.25f;
     public float    dashDelay = 0.4f;
+    public float    playerPushback = 0.6f;
 
     public Weapon   weapon;
 
@@ -26,6 +27,7 @@ public class PlayerController : MonoBehaviour {
     private new Rigidbody2D rigidbody2D;
     private SpriteRenderer  sprite;
     private Hitbox          hitbox;
+    private ParticleSystem  dashParticles;
     #endregion
 
     #region Monobehaviour Methods
@@ -37,6 +39,8 @@ public class PlayerController : MonoBehaviour {
         sprite = transform.Find("Sprite").GetComponent<SpriteRenderer>();
         spriteScale = sprite.transform.localScale;
         hitbox = transform.Find("Hitbox").GetComponent<Hitbox>();
+        dashParticles = transform.Find("DashParticles").GetComponent<ParticleSystem>();
+        dashParticles.enableEmission = false;
 
         dashTimer = dashDelay;
     }
@@ -67,13 +71,20 @@ public class PlayerController : MonoBehaviour {
         // add dash force instead of WSAD input if dashing
         if (dashTimer < dashDuration) {
             vel = dashForce;
+            if (!dashParticles.enableEmission) {
+                dashParticles.enableEmission = true;
+            }
         }
         // WSAD input
         else {
             vel.x = Input.GetAxis("Horizontal") * movementSpeed.x;
             vel.y = Input.GetAxis("Vertical") * movementSpeed.y;
+            animator.SetBool("isRunning", vel != Vector2.zero);
+
+            if (dashTimer - 2f < dashDuration && dashParticles.enableEmission) {
+                dashParticles.enableEmission = false;
+            }
         }
-        MainDebug.WriteLine("vel", vel.ToString());
         
         // calculate dash
         if (Input.GetButtonDown("Dash") && dashTimer > dashDelay) {
@@ -88,9 +99,6 @@ public class PlayerController : MonoBehaviour {
         if (vel != Vector2.zero) {
             rigidbody2D.AddForce(vel * Time.deltaTime, ForceMode2D.Impulse);
         }
-
-        // DEBUG
-        MainDebug.WriteLine("Dash Timer", dashTimer.ToString());
     }
 
     private void Rotation() {
@@ -112,9 +120,9 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-    public void Hit(int damage, Vector3 position) {
+    public void Hit(int damage, Vector3 position, float pushbackMod = 1f) {
         Vector2 dir = (transform.position - position).normalized;
-        rigidbody2D.AddForce(new Vector2(movementSpeed.x * dir.x, movementSpeed.y * dir.y) * 0.6f, ForceMode2D.Impulse);
+        rigidbody2D.AddForce(new Vector2(movementSpeed.x * dir.x, movementSpeed.y * dir.y) * playerPushback * pushbackMod, ForceMode2D.Impulse);
 
         // flash color
         sprite.material.color = new Color(1f, 0.3f, 0.3f, 1f);

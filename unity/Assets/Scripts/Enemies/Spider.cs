@@ -1,21 +1,22 @@
 ﻿using UnityEngine;
 
 public enum SpiderState {
-    Follow, DropDown, Idle, WasHit, PullUp, Dead
+    Follow, DropDown, Idle, Attack, Idle2, WasHit, PullUp, Dead
 }
 
 public class Spider : Enemy {
     #region Variables
+    public GameObject projectile;
+
+    private float projectileSpeed = 3f;
     private Vector2 followDurationRange = new Vector2(2f, 5f);
-    private Vector2 idleDurationRange = new Vector2(2f, 3f);
+    private Vector2 idleDurationRange = new Vector2(1f, 1.5f);
 
     private SpiderState spiderState;
     private Vector2 dir;
     private float timer;
     private float followDuration;
     private float idleDuration;
-
-    //private Vector2 playerDir;
     #endregion
 
     #region Monobehaviour Methods
@@ -32,12 +33,14 @@ public class Spider : Enemy {
     protected override void CheckState() {
         //MainDebug.WriteLine("timer", timer.ToString());
         //MainDebug.WriteLine("follow", followDuration.ToString());
+        MainDebug.WriteLine("state", spiderState.ToString());
 
         // convert base enemy state to spider state
         if (state == EnemyState.WasHit) {
             spiderState = SpiderState.WasHit;
             animator.SetInteger("state", (int)spiderState);
             state = EnemyState.Idle;
+            hitParticles.Play();
         }
         else if (state == EnemyState.Dead && spiderState != SpiderState.Dead) {
             rigidbody2D.AddForce(pushbackForce * 0.7f, ForceMode2D.Impulse);
@@ -47,6 +50,10 @@ public class Spider : Enemy {
         else {
             switch (spiderState) {
                 case SpiderState.Follow:
+                    // change layer to avoid colliding with the player
+                    gameObject.layer = LayerMask.NameToLayer("SpiderFollow");
+
+                    // check if the spider should drop down
                     if (timer > followDuration) {
                         timer = 0;
                         spiderState = SpiderState.DropDown;
@@ -57,6 +64,24 @@ public class Spider : Enemy {
                     spiderState = SpiderState.Idle;
                     break;
                 case SpiderState.Idle:
+                    // change the layer after a short delay
+                    if (timer > 0.1f) {
+                        gameObject.layer = LayerMask.NameToLayer("Enemy");
+                    }
+
+                    // check if the spider should attack
+                    if (timer > idleDuration) {
+                        timer = 0.2f;
+                        idleDuration = Random.Range(idleDurationRange.x, idleDurationRange.y);
+                        spiderState = SpiderState.Attack;
+                    }
+                    break;
+                case SpiderState.Attack:
+                    Attack();
+                    spiderState = SpiderState.Idle2;
+                    break;
+                case SpiderState.Idle2:
+                    // check if the spider should pull up
                     if (timer > idleDuration) {
                         timer = 0.5f;
                         idleDuration = Random.Range(idleDurationRange.x, idleDurationRange.y);
@@ -102,6 +127,11 @@ public class Spider : Enemy {
         // flip sprite
         int flip = PlayerController.Instance.transform.position.x >= transform.position.x ? 1 : -1;
         sprite.transform.parent.localScale = new Vector3(spriteScale.x * flip, spriteScale.y);
+    }
+
+    protected override void Attack() {
+        GameObject go = Instantiate(projectile, transform.position, Quaternion.identity) as GameObject;
+        go.GetComponent<SpiderProjectile>().Launch((PlayerController.Instance.transform.position - transform.position).normalized * projectileSpeed);
     }
     #endregion
 }
