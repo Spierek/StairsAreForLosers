@@ -26,6 +26,7 @@ public class PlayerController : MonoBehaviour {
     private new Rigidbody2D rigidbody2D;
     private SpriteRenderer  sprite;
     private Hitbox          hitbox;
+    private ParticleSystem  dashParticles;
     #endregion
 
     #region Monobehaviour Methods
@@ -37,6 +38,8 @@ public class PlayerController : MonoBehaviour {
         sprite = transform.Find("Sprite").GetComponent<SpriteRenderer>();
         spriteScale = sprite.transform.localScale;
         hitbox = transform.Find("Hitbox").GetComponent<Hitbox>();
+        dashParticles = transform.Find("DashParticles").GetComponent<ParticleSystem>();
+        dashParticles.enableEmission = false;
 
         dashTimer = dashDelay;
     }
@@ -67,12 +70,19 @@ public class PlayerController : MonoBehaviour {
         // add dash force instead of WSAD input if dashing
         if (dashTimer < dashDuration) {
             vel = dashForce;
+            if (!dashParticles.enableEmission) {
+                dashParticles.enableEmission = true;
+            }
         }
         // WSAD input
         else {
             vel.x = Input.GetAxis("Horizontal") * movementSpeed.x;
             vel.y = Input.GetAxis("Vertical") * movementSpeed.y;
             animator.SetBool("isRunning", vel != Vector2.zero);
+
+            if (dashTimer - 2f < dashDuration && dashParticles.enableEmission) {
+                dashParticles.enableEmission = false;
+            }
         }
         
         // calculate dash
