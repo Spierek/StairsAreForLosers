@@ -23,7 +23,7 @@ public class Column : Entity {
             destroyed = true;
             Destroy(gameObject, 2f);
             Map.instance.DemolishChunk(ID);
-            transform.DOShakePosition(2f, Random.insideUnitSphere, 10);
+            transform.DOShakePosition(10f, 0.1f);
         }
     }
 
