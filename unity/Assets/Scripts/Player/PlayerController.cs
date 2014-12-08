@@ -142,6 +142,8 @@ public class PlayerController : MonoBehaviour {
         if (health <= 0) {
             Die();
         }
+
+        hitbox.DisableCollider();
     }
 
     private float GetMouseRotation() {
