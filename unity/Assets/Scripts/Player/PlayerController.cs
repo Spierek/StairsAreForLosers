@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour {
     public float    dashMod = 3f;
     public float    dashDuration = 0.25f;
     public float    dashDelay = 0.4f;
+    public float    playerPushback = 0.6f;
 
     public Weapon   weapon;
 
@@ -119,9 +120,9 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-    public void Hit(int damage, Vector3 position) {
+    public void Hit(int damage, Vector3 position, float pushbackMod = 1f) {
         Vector2 dir = (transform.position - position).normalized;
-        rigidbody2D.AddForce(new Vector2(movementSpeed.x * dir.x, movementSpeed.y * dir.y) * 0.6f, ForceMode2D.Impulse);
+        rigidbody2D.AddForce(new Vector2(movementSpeed.x * dir.x, movementSpeed.y * dir.y) * playerPushback * pushbackMod, ForceMode2D.Impulse);
 
         // flash color
         sprite.material.color = new Color(1f, 0.3f, 0.3f, 1f);
