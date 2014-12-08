@@ -2,12 +2,16 @@
 
 public class SpookySkeleton : Enemy {
     #region Variables
+    private float attackRange = 0.5f;
+    private float attackDelay = 1f;
+    private float attackTimer;
     #endregion
 
     #region Monobehaviour Methods
     protected override void Awake() {
         base.Awake();
         state = EnemyState.Follow;
+        attackTimer = attackDelay;
     }
     #endregion
 
@@ -59,6 +63,19 @@ public class SpookySkeleton : Enemy {
         dir.y *= movementSpeed.y;
         dir *= Time.deltaTime;
         rigidbody2D.AddForce(dir, ForceMode2D.Impulse);
+
+        // attack when close to the player
+        if (playerDist.magnitude <= attackRange) {
+            if (attackTimer > attackDelay) {
+                attackTimer = 0;
+                Attack();
+            }
+        }
+        attackTimer += Time.deltaTime;
+    }
+
+    protected override void Attack() {
+        PlayerController.Instance.Hit(1, transform.position, 0.7f);
     }
     #endregion
 }
