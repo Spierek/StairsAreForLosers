@@ -26,10 +26,6 @@ public class SpiderProjectile : MonoBehaviour {
             col.gameObject.layer == LayerMask.NameToLayer("Weapon")) {
             Die();
         }
-        else if (col.gameObject.layer == LayerMask.NameToLayer("PlayerHitbox")) {
-            PlayerController.Instance.Hit(1, transform.position, 0.1f);
-            Die();
-        }
     }
     #endregion
 
@@ -38,7 +34,7 @@ public class SpiderProjectile : MonoBehaviour {
         rigidbody2D.AddForce(force, ForceMode2D.Impulse);
     }
 
-    private void Die() {
+    public void Die() {
         sprite.enabled = false;
         collider2D.enabled = false;
         Destroy(gameObject, 0.5f);

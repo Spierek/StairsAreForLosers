@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using DG.Tweening;
 
 [RequireComponent(typeof(Animator))]
@@ -13,6 +14,7 @@ public class PlayerController : MonoBehaviour {
     public float    dashDuration = 0.25f;
     public float    dashDelay = 0.4f;
     public float    playerPushback = 0.6f;
+    [NonSerialized] public float    invincibilityDuration = 1f;
 
     public Weapon   weapon;
 
@@ -126,7 +128,7 @@ public class PlayerController : MonoBehaviour {
 
         // flash color
         sprite.material.color = new Color(1f, 0.3f, 0.3f, 1f);
-        sprite.material.DOColor(Color.white, 0.5f);
+        sprite.material.DOColor(Color.white, invincibilityDuration);
 
         if (health > 0)
             health -= damage;
