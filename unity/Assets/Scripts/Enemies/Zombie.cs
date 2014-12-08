@@ -82,7 +82,7 @@ public class Zombie : Enemy {
     }
 
     protected override void Attack() {
-        PlayerController.Instance.Hit(2, transform.position, 0.7f);
+        PlayerController.Instance.Hit(1, transform.position, 0.7f);
     }
 
     protected override void Die() {

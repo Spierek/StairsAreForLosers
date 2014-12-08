@@ -11,7 +11,7 @@ public class ZombieExplosion : MonoBehaviour {
     
     void OnTriggerEnter2D (Collider2D col) {
         if (col.gameObject.layer == LayerMask.NameToLayer("EnemyHitbox")) {
-            col.transform.parent.GetComponent<Enemy>().Hit(1, (col.transform.position - transform.position).normalized);
+            col.transform.parent.GetComponent<Enemy>().Hit(1, (transform.position - col.transform.position).normalized);
         }
         if (col.gameObject.layer == LayerMask.NameToLayer("Column")) {
             col.transform.parent.GetComponent<Column>().Damage();
