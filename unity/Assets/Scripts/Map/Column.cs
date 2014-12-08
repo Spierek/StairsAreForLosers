@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using DG.Tweening;
+using UnityEngine;
 
 public class Column : Entity {
     public int HP;
@@ -22,6 +23,7 @@ public class Column : Entity {
             destroyed = true;
             Destroy(gameObject, 2f);
             Map.instance.DemolishChunk(ID);
+            transform.DOShakePosition(2f, Random.insideUnitSphere, 10);
         }
     }
 
