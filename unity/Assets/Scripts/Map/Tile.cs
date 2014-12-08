@@ -56,7 +56,7 @@ public class Tile : Entity {
                 }
                 if(spawnTileTimer <= 0 && succesor == null)
                 {
-                    succesor = Instantiate(Map.instance.tilePrefab, particles.gameObject.transform.position, Quaternion.identity) as GameObject;
+                    succesor = Instantiate(Map.instance.tilePrefab, transform.position, Quaternion.identity) as GameObject;
                     succesor.transform.parent = this.transform.parent;
                     Tile succesorTile = succesor.GetComponent<Tile>();
                     succesorTile.precedesor = this.gameObject;
@@ -77,7 +77,7 @@ public class Tile : Entity {
                     }
                     if (entityToSpawn != null)
                     {
-                        GameObject newEntity = Instantiate(entityToSpawn, particles.gameObject.transform.position, Quaternion.identity) as GameObject;
+                        GameObject newEntity = Instantiate(entityToSpawn, transform.position, Quaternion.identity) as GameObject;
                         if (newEntity.GetComponent<Enemy>() != null)
                         {
                             newEntity.GetComponent<Enemy>().finalPosition = this.transform.position;
