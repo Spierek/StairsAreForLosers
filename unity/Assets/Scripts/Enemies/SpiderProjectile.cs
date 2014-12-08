@@ -5,12 +5,14 @@ public class SpiderProjectile : MonoBehaviour {
     #region Variables
     private float rotationSpeed = 180f;
     private SpriteRenderer      sprite;
+    private ParticleSystem      slimeParticle;
     private ParticleSystem      deathParticle;
     #endregion
 
     #region Monobehaviour Methods
     void Awake () {
         sprite = transform.Find("Sprite").GetComponent<SpriteRenderer>();
+        slimeParticle = transform.Find("Slime").GetComponent<ParticleSystem>();
         deathParticle = transform.Find("Death").GetComponent<ParticleSystem>();
     }
     
@@ -20,7 +22,8 @@ public class SpiderProjectile : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D col) {
         if (col.gameObject.layer == LayerMask.NameToLayer("Column") ||
-            col.gameObject.layer == LayerMask.NameToLayer("Obstacle")) {
+            col.gameObject.layer == LayerMask.NameToLayer("Obstacle") ||
+            col.gameObject.layer == LayerMask.NameToLayer("Weapon")) {
             Die();
         }
         else if (col.gameObject.layer == LayerMask.NameToLayer("PlayerHitbox")) {
@@ -40,6 +43,7 @@ public class SpiderProjectile : MonoBehaviour {
         collider2D.enabled = false;
         Destroy(gameObject, 0.5f);
         deathParticle.Play();
+        slimeParticle.enableEmission = false;
     }
     #endregion
 }
