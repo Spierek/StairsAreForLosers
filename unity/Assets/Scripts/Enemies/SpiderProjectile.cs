@@ -18,7 +18,7 @@ public class SpiderProjectile : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D col) {
         if (col.gameObject.layer == LayerMask.NameToLayer("Column") ||
-            col.gameObject.layer == LayerMask.NameToLayer("Column")) {
+            col.gameObject.layer == LayerMask.NameToLayer("Obstacle")) {
             Die();
         }
         else if (col.gameObject.layer == LayerMask.NameToLayer("PlayerHitbox")) {
