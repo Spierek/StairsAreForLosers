@@ -16,7 +16,7 @@ public class EnemyHitbox : MonoBehaviour {
     private void OnTriggerEnter2D(Collider2D col) {
         // TODO: possibly redundant check since EnemyHitbox can only collide with weapons
         if (col.gameObject.layer == LayerMask.NameToLayer("Weapon")) {
-            enemy.Hit(col.GetComponent<WeaponHitbox>().damage);
+            enemy.Hit(col.GetComponent<WeaponHitbox>().damage, PlayerController.Instance.GetMouseDirection());
         }
     }
     #endregion
