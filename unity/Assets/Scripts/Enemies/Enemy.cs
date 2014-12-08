@@ -72,10 +72,9 @@ public class Enemy : Entity {
         
     }
 
-    public virtual void Hit(float damage) {
+    public virtual void Hit(float damage, Vector2 direction) {
         // calculate force
-        Vector2 mouseDir = PlayerController.Instance.GetMouseDirection();
-        pushbackForce = -new Vector2(movementSpeed.x * mouseDir.x, movementSpeed.y * mouseDir.y);
+        pushbackForce = -new Vector2(movementSpeed.x * direction.x, movementSpeed.y * direction.y);
         rigidbody2D.AddForce(pushbackForce * pushbackMod, ForceMode2D.Impulse);
 
         pushbackTimer = 0;
