@@ -32,6 +32,8 @@ public class Map : MonoBehaviour {
 
     public GameObject tilePrefab;
     public GameObject columnPrefab;
+    public GameObject coinsPrefab;
+    public GameObject heartPrefab;
 
     public GameObject skeletonPrefab;
 
