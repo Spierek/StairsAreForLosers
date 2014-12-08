@@ -94,13 +94,14 @@ public class Zombie : Enemy {
             hitParticles.Play();
 
         Invoke("Explode", 3f);
-        Destroy(gameObject, 4f);
+        Destroy(gameObject, 4.5f);
     }
 
     private void Explode() {
         // particles
         explosionParticle.Play();
         explosion.EnableCollider();
+        sprite.enabled = false;
     }
     #endregion
 }
