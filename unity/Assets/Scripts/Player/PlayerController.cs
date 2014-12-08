@@ -38,8 +38,8 @@ public class PlayerController : MonoBehaviour {
 
         animator = GetComponent<Animator>();
         rigidbody2D = GetComponent<Rigidbody2D>();
-        sprite = transform.Find("Sprite").GetComponent<SpriteRenderer>();
-        spriteScale = sprite.transform.localScale;
+        sprite = transform.Find("SpriteContainer").Find("Sprite").GetComponent<SpriteRenderer>();
+        spriteScale = sprite.transform.parent.localScale;
         hitbox = transform.Find("Hitbox").GetComponent<Hitbox>();
         dashParticles = transform.Find("DashParticles").GetComponent<ParticleSystem>();
         dashParticles.enableEmission = false;
@@ -48,15 +48,22 @@ public class PlayerController : MonoBehaviour {
     }
     
     void Update () {
-        Movement();
-        Rotation();
-        Attack();
+        if (health > 0) {
+            Movement();
+            Rotation();
+            Attack();
+        }
         // DEBUG: healthbar
         string hp = "";
         for (int i = 0; i < health; i++) {
             hp += "♥";
         }
         MainDebug.WriteLine("Health", hp);
+
+        // DEBUG: death
+        if (Input.GetKeyDown(KeyCode.U)) {
+            Die();
+        }
     }
 
     void OnDrawGizmos() {
@@ -110,7 +117,7 @@ public class PlayerController : MonoBehaviour {
         // flip sprite & weapon based on mouse position
         int dir = mousePosition.x >= transform.position.x ? 1 : -1;
         sprite.transform.localScale = new Vector3(spriteScale.x * dir, spriteScale.y);
-        weapon.transform.localScale = new Vector3(weapon.scale.x * dir, weapon.scale.y);
+        weapon.transform.parent.localScale = new Vector3(weapon.scale.x * dir, weapon.scale.y);
 
         // rotate weapon
         weapon.transform.localRotation = Quaternion.Euler(0, 0, GetMouseRotation());
@@ -132,7 +139,9 @@ public class PlayerController : MonoBehaviour {
 
         if (health > 0)
             health -= damage;
-        // TODO: game over on 0HP
+        if (health <= 0) {
+            Die();
+        }
     }
 
     private float GetMouseRotation() {
@@ -140,13 +149,22 @@ public class PlayerController : MonoBehaviour {
         float rot = Mathf.Atan2(mouseDir.y, mouseDir.x) * Mathf.Rad2Deg;
 
         // clamp to (-90; 90) range to compensate for sprite flipping
-        if (rot < -90 || rot > 90)
+        if (rot < -90 || rot > 90) {
             rot += 180;
+            rot *= -1;
+        }
+            
         return rot;
     }
 
     public Vector2 GetMouseDirection() {
         return (transform.position - mousePosition).normalized;
+    }
+
+    private void Die() {
+        health = 0;
+        animator.SetBool("isDead", true);
+
     }
     #endregion
 }
