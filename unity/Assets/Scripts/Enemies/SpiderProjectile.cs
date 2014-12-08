@@ -5,11 +5,13 @@ public class SpiderProjectile : MonoBehaviour {
     #region Variables
     private float rotationSpeed = 180f;
     private SpriteRenderer      sprite;
+    private ParticleSystem      deathParticle;
     #endregion
 
     #region Monobehaviour Methods
     void Awake () {
         sprite = transform.Find("Sprite").GetComponent<SpriteRenderer>();
+        deathParticle = transform.Find("Death").GetComponent<ParticleSystem>();
     }
     
     void Update () {
@@ -34,8 +36,10 @@ public class SpiderProjectile : MonoBehaviour {
     }
 
     private void Die() {
-        Destroy(gameObject);
-        // TODO: add some particles on projectile death
+        sprite.enabled = false;
+        collider2D.enabled = false;
+        Destroy(gameObject, 0.5f);
+        deathParticle.Play();
     }
     #endregion
 }
