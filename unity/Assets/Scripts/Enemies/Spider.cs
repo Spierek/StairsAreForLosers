@@ -38,6 +38,7 @@ public class Spider : Enemy {
             spiderState = SpiderState.WasHit;
             animator.SetInteger("state", (int)spiderState);
             state = EnemyState.Idle;
+            hitParticles.Play();
         }
         else if (state == EnemyState.Dead && spiderState != SpiderState.Dead) {
             rigidbody2D.AddForce(pushbackForce * 0.7f, ForceMode2D.Impulse);

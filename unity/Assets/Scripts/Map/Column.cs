@@ -29,7 +29,9 @@ public class Column : Entity {
 
     // TODO: add custom damage
     public void Damage() {
-        HP--;
-        dustParticles.Play();
+        if (HP > 0) {
+            HP--;
+            dustParticles.Play();
+        }
     }
 }

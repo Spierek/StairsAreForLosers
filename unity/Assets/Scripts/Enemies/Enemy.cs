@@ -24,6 +24,7 @@ public class Enemy : Entity {
     protected Animator          animator;
     protected new Rigidbody2D   rigidbody2D;
     protected SpriteRenderer    sprite;
+    protected ParticleSystem    hitParticles;
     #endregion
 
     #region Monobehaviour Methods
@@ -32,6 +33,7 @@ public class Enemy : Entity {
         rigidbody2D = GetComponent<Rigidbody2D>();
         sprite = transform.Find("SpriteContainer").Find("Sprite").GetComponent<SpriteRenderer>();
         spriteScale = sprite.transform.parent.localScale;
+        hitParticles = transform.Find("HitParticles").GetComponent<ParticleSystem>();
     }
     
     protected virtual void Update () {
@@ -40,6 +42,8 @@ public class Enemy : Entity {
         if (state != EnemyState.Dead) {
             if (state == EnemyState.WasHit) {
                 Pushback();
+                if (hitParticles.isStopped)
+                    hitParticles.Play();
             }
             else {
                 Movement();
@@ -101,6 +105,9 @@ public class Enemy : Entity {
         state = EnemyState.Dead;
         animator.SetBool("isDead", true);
         sprite.material.DOColor(new Color(0.5f, 0.5f, 0.5f, 1f), 0.5f);
+        if (hitParticles.isStopped)
+            hitParticles.Play();
+
         Destroy(gameObject, 3f);
     }
     #endregion
