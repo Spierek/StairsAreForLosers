@@ -72,8 +72,8 @@ public class PlayerController : MonoBehaviour {
         else {
             vel.x = Input.GetAxis("Horizontal") * movementSpeed.x;
             vel.y = Input.GetAxis("Vertical") * movementSpeed.y;
+            animator.SetBool("isRunning", vel != Vector2.zero);
         }
-        MainDebug.WriteLine("vel", vel.ToString());
         
         // calculate dash
         if (Input.GetButtonDown("Dash") && dashTimer > dashDelay) {
@@ -88,9 +88,6 @@ public class PlayerController : MonoBehaviour {
         if (vel != Vector2.zero) {
             rigidbody2D.AddForce(vel * Time.deltaTime, ForceMode2D.Impulse);
         }
-
-        // DEBUG
-        MainDebug.WriteLine("Dash Timer", dashTimer.ToString());
     }
 
     private void Rotation() {
