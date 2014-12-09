@@ -1,6 +1,5 @@
 ﻿using DG.Tweening;
 using UnityEngine;
-using UnityEngine.UI;
 
 public enum EnemyState {
     Idle, Follow, Attack, WasHit, Dead
@@ -100,15 +99,22 @@ public class Enemy : Entity {
     }
 
     protected virtual void Die() {
-        MainDebug.WriteLine("ded", 2f);
         state = EnemyState.Dead;
         animator.SetBool("isDead", true);
         sprite.material.DOColor(new Color(0.5f, 0.5f, 0.5f, 1f), 0.5f);
         if (hitParticles.isStopped)
             hitParticles.Play();
 
-        Map.instance.enemiesCount--;
+        DropPickup();
         Destroy(gameObject, 3f);
+    }
+
+    protected void DropPickup() {
+        if (Random.Range(0f, 1f) < 0.2f) {
+            GameObject go = Resources.Load("Prefabs/HeartPickup") as GameObject;
+            go = Instantiate(go, transform.position, Quaternion.identity) as GameObject;
+            go.GetComponent<HeartPickup>().Spawn();  
+        }
     }
     #endregion
 }
