@@ -9,6 +9,7 @@ public class Zombie : Enemy {
 
     private ZombieExplosion explosion;
     private ParticleSystem explosionParticle;
+    private SpriteRenderer shadow;
     #endregion
 
     #region Monobehaviour Methods
@@ -19,6 +20,7 @@ public class Zombie : Enemy {
 
         explosion = transform.Find("Explosion").GetComponent<ZombieExplosion>();
         explosionParticle = explosion.transform.Find("Particles").GetComponent<ParticleSystem>();
+        shadow = transform.Find("SpriteContainer").Find("Shadow").GetComponent<SpriteRenderer>();
     }
     #endregion
 
@@ -103,6 +105,7 @@ public class Zombie : Enemy {
         explosionParticle.Play();
         explosion.EnableCollider();
         sprite.enabled = false;
+        shadow.enabled = false;
     }
     #endregion
 }
