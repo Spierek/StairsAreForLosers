@@ -8,7 +8,8 @@ public class TileHitbox : MonoBehaviour {
     {
         if (col.gameObject.layer == LayerMask.NameToLayer("EnemyHitbox"))
         {
-            col.gameObject.GetComponent<Enemy>().Hit(2, Vector3.zero);
+            Enemy enemy = col.transform.parent.gameObject.GetComponent<Enemy>();
+            if(enemy!=null) if(!enemy.isFalling) enemy.Hit(2, Vector3.zero);
         }
     }
 	// Update is called once per frame

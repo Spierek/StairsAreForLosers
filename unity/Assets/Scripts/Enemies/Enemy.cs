@@ -107,6 +107,7 @@ public class Enemy : Entity {
         if (hitParticles.isStopped)
             hitParticles.Play();
 
+        Map.instance.enemiesCount--;
         Destroy(gameObject, 3f);
     }
     #endregion
