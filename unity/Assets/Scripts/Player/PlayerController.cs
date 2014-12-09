@@ -18,7 +18,8 @@ public class PlayerController : MonoBehaviour {
 
     public Weapon   weapon;
 
-    private int     health = 8;
+    private int     health;
+    private int     maxHealth = 8;
 
     private Vector3 mousePosition;
     private Vector3 spriteScale;
@@ -46,6 +47,8 @@ public class PlayerController : MonoBehaviour {
         hitbox = transform.Find("Hitbox").GetComponent<Hitbox>();
         dashParticles = transform.Find("DashParticles").GetComponent<ParticleSystem>();
         dashParticles.enableEmission = false;
+
+        health = maxHealth;
 
         dashTimer = dashDelay;
     }
@@ -84,6 +87,15 @@ public class PlayerController : MonoBehaviour {
         // draw mouse direction
         Gizmos.color = new Color(0,1,1,0.5f);
         Gizmos.DrawLine(transform.position, mousePosition);
+    }
+
+    void OnCollisionEnter2D(Collision2D col) {
+        if (col.gameObject.layer == LayerMask.NameToLayer("Pickup")) {
+            col.gameObject.GetComponent<HeartPickup>().Grab();
+
+            if (health != maxHealth)
+                health++;
+        }
     }
     #endregion
 
@@ -178,7 +190,7 @@ public class PlayerController : MonoBehaviour {
     private void Die() {
         health = 0;
         animator.SetBool("isDead", true);
-
+        hitbox.collider2D.enabled = false;
     }
     #endregion
 }

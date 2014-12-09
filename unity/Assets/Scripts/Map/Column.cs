@@ -23,6 +23,7 @@ public class Column : Entity {
             destroyed = true;
             Destroy(gameObject, 2f);
             Map.instance.DemolishChunk(ID);
+            Map.instance.columnsCount--;
             transform.DOShakePosition(10f, 0.1f);
         }
     }
@@ -31,7 +32,7 @@ public class Column : Entity {
     public void Damage() {
         if (HP > 0) {
             HP--;
-            dustParticles.Play();
+            dustParticles.Play();         
         }
     }
 }
