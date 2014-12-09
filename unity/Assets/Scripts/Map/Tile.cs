@@ -9,7 +9,8 @@ public class Tile : Entity {
     public float lateParticleEffect;
     public float spawnTileTimer = 2f;
     public float deathTimer = 3f;
-    public ParticleSystem particles;
+    public ParticleSystem dustParticles;
+    public ParticleSystem landingParticles;
     public GameObject succesor;
     public GameObject precedesor;
     public bool spawnColumn;
@@ -34,17 +35,19 @@ public class Tile : Entity {
         Destroy(precedesor);
         down.pitch = UnityEngine.Random.Range(0.80f, 1.10f);
         down.Play();
+        landingParticles.Play();
     }
 
-	// Use this for initialization
-	protected override void Start () {
+    // Use this for initialization
+    protected override void Start () {
         base.Start();
-        particles = GetComponentInChildren<ParticleSystem>();            
-	}
-	
-	// Update is called once per frame
-	void Update () {
-        	if(isDying)
+        dustParticles = transform.Find("Dust").GetComponent<ParticleSystem>();            
+        landingParticles = transform.Find("DustLanding").GetComponent<ParticleSystem>();            
+    }
+    
+    // Update is called once per frame
+    void Update () {
+            if(isDying)
             {
                 deathTimer -= Time.deltaTime;
                 spawnTileTimer -= Time.deltaTime;
@@ -54,7 +57,7 @@ public class Tile : Entity {
                 }
                 else if(!deathParticlesPlayed)
                 {
-                    particles.Play();
+                    dustParticles.Play();
                     deathParticlesPlayed = true;
                 }
                 if(spawnTileTimer <= 0 && succesor == null)
@@ -102,5 +105,5 @@ public class Tile : Entity {
                     }
                 }
             }
-	}
+    }
 }
