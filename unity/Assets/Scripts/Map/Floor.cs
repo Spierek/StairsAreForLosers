@@ -42,8 +42,10 @@ public class Floor {
                   possibleSpawns.Add(new Vector2(x, y));
               }
 
-               colorMap[x, y] = (shopkeeper?0:Map.instance.higestFloor);
-           }
+               colorMap[x, y] = Map.instance.higestFloor;
+               
+           
+          }
         Map.instance.higestFloor++;
         if(nr>0)
         {

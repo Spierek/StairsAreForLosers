@@ -66,7 +66,9 @@ public class Tile : Entity {
                     succesorTile.finalPosition = this.transform.position;
                     succesorTile.location = this.location;
                     succesor.GetComponentInChildren<SpriteRenderer>().color = Map.instance.GetIndexColor(Map.floors[0].colorMap[(int)location.x, (int)location.y]);
+                    if (Map.floors[0].colorMap[(int)location.x, (int)location.y] > Map.instance.bestFloor)  Map.instance.bestFloor = Map.floors[0].colorMap[(int)location.x, (int)location.y];
                     succesor.name = this.gameObject.name;
+
 
                     GameObject entityToSpawn;
                     switch(Map.floors[0].entitiesMap[(int)location.x, (int)location.y])

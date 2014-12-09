@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public class Map : MonoBehaviour {
 
     public String[] indexcolors = new String[]{
-        "FFFFFF", "FFFF00", "1CE6FF", "FF34FF", "FF4A46", "008941", "006FA6", "A30059",
+        "00FFFF", "FFFF00", "1CE6FF", "FF34FF", "FF4A46", "008941", "006FA6", "A30059",
         "FFDBE5", "7A4900", "0000A6", "63FFAC", "B79762", "004D43", "8FB0FF", "997D87",
         "5A0007", "809693", "FEFFE6", "1B4400", "4FC601", "3B5DFF", "4A3B53", "FF2F80",
         "61615A", "BA0900", "6B7900", "00C2A0", "FFAA92", "FF90C9", "B903AA", "D16100",
@@ -41,6 +41,7 @@ public class Map : MonoBehaviour {
 
     private int structure = 2;
     public int higestFloor;
+    public int bestFloor;
 
     public float tileSpacing;
 
@@ -132,11 +133,11 @@ public class Map : MonoBehaviour {
 	// Use this for initialization
 	void Start () { 
         instance = this;
+        bestFloor = 0;
+        floorSetDone = false;
         higestFloor = 0;
         GenerateFloors();
         floors = new List<Floor>();
-        floors.Add(new Floor(structure));
-        floors.Add(new Floor(structure));
         floors.Add(new Floor(structure));
         floors.Add(new Floor(structure));
         floors.Add(new Floor(structure, true));
@@ -153,7 +154,6 @@ public class Map : MonoBehaviour {
         floors.Clear();
         floors.Add(new Floor(structure));
         floors.Add(new Floor(structure));
-        floors.Add(new Floor(structure));
         floors.Add(new Floor(structure, true));
         GenerateTiles(floors[0]);
         Destroy(oldFloorRoot);
@@ -163,6 +163,8 @@ public class Map : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         MainDebug.WriteLine("Columns Count: " + columnsCount);
+        MainDebug.WriteLine("Best Floor: " + bestFloor);
+        MainDebug.WriteLine("Enemies Count: " + enemiesCount);
         if (columnsCount == 0 && enemiesCount == 0 && !floorSetDone)
         {
             Invoke("NextLevelFloors", 3f);

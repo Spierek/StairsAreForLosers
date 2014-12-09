@@ -109,6 +109,7 @@ public class Enemy : Entity {
         if (hitParticles.isStopped)
             hitParticles.Play();
 
+        Map.instance.enemiesCount--;
         DropPickup();
         Destroy(gameObject, 3f);
     }
