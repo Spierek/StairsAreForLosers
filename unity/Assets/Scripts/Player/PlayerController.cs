@@ -85,6 +85,13 @@ public class PlayerController : MonoBehaviour {
         Gizmos.color = new Color(0,1,1,0.5f);
         Gizmos.DrawLine(transform.position, mousePosition);
     }
+
+    void OnCollisionEnter2D(Collision2D col) {
+        if (col.gameObject.layer == LayerMask.NameToLayer("Pickup")) {
+            col.gameObject.GetComponent<HeartPickup>().Grab();
+            health++;
+        }
+    }
     #endregion
 
     #region Methods
