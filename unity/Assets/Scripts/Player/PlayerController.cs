@@ -106,9 +106,7 @@ public class PlayerController : MonoBehaviour {
         // add dash force instead of WSAD input if dashing
         if (dashTimer < dashDuration) {
             vel = dashForce;
-            if (!dashParticles.enableEmission) {
-                dashParticles.enableEmission = true;
-            }
+            dashParticles.enableEmission = true;
         }
         // WSAD input
         else {
