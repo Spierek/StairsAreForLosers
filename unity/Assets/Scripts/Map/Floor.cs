@@ -58,13 +58,13 @@ public class Floor {
         }
         if(nr>1)
         {
-            for (int i = 0; i < 0; i++)
+            for (int i = 0; i < (4 + (Map.instance.enemyMultiplier * 3)); i++)
             {
                 Vector2 pos = possibleSpawns[UnityEngine.Random.Range(0, possibleSpawns.Count - 1)];
                 entitiesMap[(int)pos.x, (int)pos.y] = 3;
                 possibleSpawns.Remove(pos);
             }
-            for (int i = 0; i < 0; i++)
+            for (int i = 0; i < (3 + (Map.instance.enemyMultiplier * 2)); i++)
             {
                 Vector2 pos = possibleSpawns[UnityEngine.Random.Range(0, possibleSpawns.Count - 1)];
                 entitiesMap[(int)pos.x, (int)pos.y] = 5;
@@ -73,7 +73,7 @@ public class Floor {
         }
         if (nr > 2)
         {
-            for (int i = 0; i < 0; i++)
+            for (int i = 0; i < (5 + (Map.instance.enemyMultiplier * 3)); i++)
             {
                 Vector2 pos = possibleSpawns[UnityEngine.Random.Range(0, possibleSpawns.Count - 1)];
                 entitiesMap[(int)pos.x, (int)pos.y] = 4;
