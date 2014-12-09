@@ -18,7 +18,7 @@ public class PlayerController : MonoBehaviour {
 
     public Weapon   weapon;
 
-    private int     health;
+    public int     health;
     private int     maxHealth = 8;
 
     private Vector3 mousePosition;
