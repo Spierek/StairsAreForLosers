@@ -18,7 +18,8 @@ public class PlayerController : MonoBehaviour {
 
     public Weapon   weapon;
 
-    private int     health = 8;
+    private int     health;
+    private int     maxHealth = 8;
 
     private Vector3 mousePosition;
     private Vector3 spriteScale;
@@ -46,6 +47,8 @@ public class PlayerController : MonoBehaviour {
         hitbox = transform.Find("Hitbox").GetComponent<Hitbox>();
         dashParticles = transform.Find("DashParticles").GetComponent<ParticleSystem>();
         dashParticles.enableEmission = false;
+
+        health = maxHealth;
 
         dashTimer = dashDelay;
     }
@@ -89,7 +92,9 @@ public class PlayerController : MonoBehaviour {
     void OnCollisionEnter2D(Collision2D col) {
         if (col.gameObject.layer == LayerMask.NameToLayer("Pickup")) {
             col.gameObject.GetComponent<HeartPickup>().Grab();
-            health++;
+
+            if (health != maxHealth)
+                health++;
         }
     }
     #endregion
