@@ -190,7 +190,7 @@ public class PlayerController : MonoBehaviour {
     private void Die() {
         health = 0;
         animator.SetBool("isDead", true);
-
+        hitbox.collider2D.enabled = false;
     }
     #endregion
 }

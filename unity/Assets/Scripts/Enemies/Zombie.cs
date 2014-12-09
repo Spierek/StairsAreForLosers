@@ -94,6 +94,7 @@ public class Zombie : Enemy {
             hitParticles.Play();
 
         Invoke("Explode", 3f);
+        DropPickup();
         Destroy(gameObject, 6f);
     }
 

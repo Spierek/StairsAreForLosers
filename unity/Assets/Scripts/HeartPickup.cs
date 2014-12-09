@@ -20,5 +20,10 @@ public class HeartPickup : MonoBehaviour {
         collider2D.enabled = false;
         Destroy(gameObject, 2f);
     }
+
+    public void Spawn() {
+        Vector2 force = Random.insideUnitCircle;
+        rigidbody2D.AddForce(force.normalized * 3, ForceMode2D.Impulse);
+    }
     #endregion
 }
