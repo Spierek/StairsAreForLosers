@@ -13,6 +13,7 @@ public class Tile : Entity {
     public GameObject succesor;
     public GameObject precedesor;
     public bool spawnColumn;
+    public AudioSource down;
     private bool isDying;
 
     private bool deathParticlesPlayed;
@@ -31,6 +32,8 @@ public class Tile : Entity {
     protected override void OnFallen()
     {
         Destroy(precedesor);
+        down.pitch = UnityEngine.Random.Range(0.80f, 1.10f);
+        down.Play();
     }
 
 	// Use this for initialization
