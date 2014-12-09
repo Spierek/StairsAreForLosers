@@ -6,11 +6,14 @@ public class HeartDisplay : MonoBehaviour {
     #region Variables
     public List<Image> sprites;
     public Text floor;
+    public Text gameOver;
+    public Text restart;
     #endregion
 
     #region Monobehaviour Methods
     void Awake () {
-    
+            gameOver.enabled = false;
+            restart.enabled = false;
     }
     
     void Update () {
@@ -19,6 +22,11 @@ public class HeartDisplay : MonoBehaviour {
         }
 
         floor.text = Map.instance.bestFloor.ToString();
+
+        if (PlayerController.Instance.health == 0) {
+            gameOver.enabled = true;
+            restart.enabled = true;
+        }
     }
     #endregion
 
