@@ -10,6 +10,7 @@ public class Column : Entity {
     
     private bool destroyed;
 
+    private SpriteRenderer sprite;
     private Animator animator;
     private ParticleSystem dustParticles;
 
@@ -17,6 +18,7 @@ public class Column : Entity {
         animator = GetComponent<Animator>();
         animator.SetFloat("HP", HP);
         dustParticles = transform.Find("DustParticles").GetComponent<ParticleSystem>();
+        sprite = transform.Find("Sprite").GetComponent<SpriteRenderer>();
     }
     
     void Update () {
@@ -28,6 +30,7 @@ public class Column : Entity {
             Map.instance.DemolishChunk(ID);
             Map.instance.columnsCount--;
             transform.DOShakePosition(10f, 0.1f);
+            sprite.material.DOFade(0f, 1.8f);
             shake.Play();
         }
     }
