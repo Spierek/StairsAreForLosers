@@ -42,9 +42,9 @@ public class Floor {
                   possibleSpawns.Add(new Vector2(x, y));
               }
 
-              colorMap[x, y] = this.nr;
+              colorMap[x, y] = Map.instance.higestFloor;
            }
-
+        Map.instance.higestFloor++;
         if(nr>0)
         {
             for(int i=0;i<12;i++)
@@ -56,13 +56,13 @@ public class Floor {
         }
         if(nr>1)
         {
-            for (int i = 0; i < 24; i++)
+            for (int i = 0; i < 0; i++)
             {
                 Vector2 pos = possibleSpawns[UnityEngine.Random.Range(0, possibleSpawns.Count - 1)];
                 entitiesMap[(int)pos.x, (int)pos.y] = 3;
                 possibleSpawns.Remove(pos);
             }
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < 0; i++)
             {
                 Vector2 pos = possibleSpawns[UnityEngine.Random.Range(0, possibleSpawns.Count - 1)];
                 entitiesMap[(int)pos.x, (int)pos.y] = 5;
@@ -71,7 +71,7 @@ public class Floor {
         }
         if (nr > 2)
         {
-            for (int i = 0; i < 12; i++)
+            for (int i = 0; i < 0; i++)
             {
                 Vector2 pos = possibleSpawns[UnityEngine.Random.Range(0, possibleSpawns.Count - 1)];
                 entitiesMap[(int)pos.x, (int)pos.y] = 4;

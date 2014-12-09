@@ -83,12 +83,14 @@ public class Tile : Entity {
                             newEntity.GetComponent<Enemy>().finalPosition = this.transform.position;
                             newEntity.GetComponent<Enemy>().delayTween = true;
                             newEntity.name = entityToSpawn.name;
+                            Map.instance.enemiesCount++;
                         }
                         else
                         {
                             newEntity.GetComponent<Column>().finalPosition = this.transform.position;
                             newEntity.GetComponent<Column>().delayTween = true;
                             newEntity.GetComponent<Column>().ID = Map.floors[0].columnsMap[(int)location.x, (int)location.y];
+                            Map.instance.columnsCount++;
                             newEntity.name = entityToSpawn.name;
                             
                         }

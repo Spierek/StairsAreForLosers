@@ -39,7 +39,14 @@ public class Map : MonoBehaviour {
 
     public int floorCount;
 
+    private int structure = 2;
+    public int higestFloor;
+
     public float tileSpacing;
+
+    public int columnsCount;
+    public int enemiesCount;
+    public bool floorSetDone;
 
     void Awake()
     {
@@ -84,20 +91,24 @@ public class Map : MonoBehaviour {
         foreach (Floor floor in floors) floor.ToDebug();
     }
 
-    public void GenerateTiles(Floor floor)
+    public void GenerateTiles(Floor floor, bool columnsOnly = false)
     {
         GameObject floorRoot = new GameObject();
+        float delayVal = 0.0f;
         floorRoot.transform.parent = this.transform;
-        floorRoot.name = "Floor[" + floor.nr.ToString() + "]";
+        floorRoot.name = "Floor root";
         for (int x = 0; x < mapSize.x; x++)
             for (int y = 0; y < mapSize.y; y++)
             {
-                GameObject tile = Instantiate(tilePrefab, new Vector3((x * tileSpacing) - mapSize.x/2, (y * tileSpacing) - mapSize.y/2, 0f), Quaternion.identity) as GameObject;
-                tile.transform.parent = floorRoot.transform;
-                tile.name = "[" + x.ToString() + "," + y.ToString() + "]";
-               // tile.GetComponent<SpriteRenderer>().color = HexToColor(indexcolors[Convert.ToInt32(floor.chunksMap[x, y])]);
-                tile.GetComponent<Tile>().location = new Vector2(x, y);
-                tile.GetComponent<Tile>().doNotTween = true;
+                if (!columnsOnly)
+                {
+                    GameObject tile = Instantiate(tilePrefab, new Vector3((x * tileSpacing) - mapSize.x / 2, (y * tileSpacing) - mapSize.y / 2, 0f), Quaternion.identity) as GameObject;
+                    tile.transform.parent = floorRoot.transform;
+                    tile.name = "[" + x.ToString() + "," + y.ToString() + "]";
+                    tile.GetComponentInChildren<SpriteRenderer>().color = HexToColor(indexcolors[instance.higestFloor]);
+                    tile.GetComponent<Tile>().location = new Vector2(x, y);
+                    tile.GetComponent<Tile>().doNotTween = true;
+                }
                 if (floor.columnsMap[x, y] > 0)
                 {
                     GameObject column = Instantiate(columnPrefab, new Vector3((x * tileSpacing) - mapSize.x / 2 - (tileSpacing * (floor.a % 2))
@@ -107,26 +118,55 @@ public class Map : MonoBehaviour {
                     column.transform.parent = floorRoot.transform;
                     column.name = "Column[" + floor.columnsMap[x, y].ToString() + "]";
                     column.GetComponent<Column>().ID = floor.columnsMap[x, y];
-                    column.GetComponent<Column>().doNotTween = true;
+                    //column.GetComponent<Column>().doNotTween = true;
+                    column.GetComponent<Column>().delayTween = true;
+                    column.GetComponent<Column>().delayVal = delayVal;
+                    column.GetComponent<Column>().finalPosition = column.transform.position;
+                    delayVal += 0.1f;
+                    columnsCount++;
                    // column.GetComponentInChildren<SpriteRenderer>().color = HexToColor(indexcolors[Convert.ToInt32(floor.columnsMap[x, y])]);
                 }
             }
     }
 
 	// Use this for initialization
-	void Start () {
+	void Start () { 
         instance = this;
+        higestFloor = 0;
         GenerateFloors();
         floors = new List<Floor>();
-        floors.Add(new Floor(2));
-        floors.Add(new Floor(2));
-        floors.Add(new Floor(2));
-        floors.Add(new Floor(2, true));
+        floors.Add(new Floor(structure));
+        floors.Add(new Floor(structure));
+        floors.Add(new Floor(structure));
+        floors.Add(new Floor(structure));
+        floors.Add(new Floor(structure, true));
         GenerateTiles(floors[0]);
 	}
 	
+    void NextLevelFloors()
+    {
+        //Remove 
+        structure++;
+        if (structure > 4) structure = 4;
+
+        GameObject oldFloorRoot = GameObject.Find("Floor root");
+        floors.Clear();
+        floors.Add(new Floor(structure));
+        floors.Add(new Floor(structure));
+        floors.Add(new Floor(structure));
+        floors.Add(new Floor(structure, true));
+        GenerateTiles(floors[0]);
+        Destroy(oldFloorRoot);
+        floorSetDone = false;
+    }
+
 	// Update is called once per frame
 	void Update () {
-	
+        MainDebug.WriteLine("Columns Count: " + columnsCount);
+        if (columnsCount == 0 && enemiesCount == 0 && !floorSetDone)
+        {
+            Invoke("NextLevelFloors", 3f);
+            floorSetDone = true;
+        }
 	}
 }
