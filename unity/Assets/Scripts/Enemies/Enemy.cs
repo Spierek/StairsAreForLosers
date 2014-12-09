@@ -28,7 +28,8 @@ public class Enemy : Entity {
     #endregion
 
     #region Monobehaviour Methods
-    protected virtual void Awake () {
+    protected override void Awake () {
+        base.Awake();
         animator = GetComponent<Animator>();
         rigidbody2D = GetComponent<Rigidbody2D>();
         sprite = transform.Find("SpriteContainer").Find("Sprite").GetComponent<SpriteRenderer>();
@@ -111,7 +112,7 @@ public class Enemy : Entity {
 
         Map.instance.enemiesCount--;
         DropPickup();
-        Destroy(gameObject, 3f);
+        Destroy(gameObject, 5f);
     }
 
     protected void DropPickup() {

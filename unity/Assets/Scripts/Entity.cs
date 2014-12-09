@@ -13,11 +13,14 @@ public class Entity : MonoBehaviour
     public bool hurtOnFall;
     public bool isFalling = true;
     private Transform collider;
+
+    protected virtual void Awake() {
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        spriteContainer = transform.Find("SpriteContainer");
+    }
    
     protected virtual void Start()
     {
-        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-        spriteContainer = transform.Find("SpriteContainer");
         if(hurtOnFall)
         {
             collider = transform.Find("FallHitbox");

@@ -17,6 +17,9 @@ public class Spider : Enemy {
     private float timer;
     private float followDuration;
     private float idleDuration;
+
+    private ParticleSystem deathParticle;
+    private SpriteRenderer shadow;
     #endregion
 
     #region Monobehaviour Methods
@@ -26,6 +29,8 @@ public class Spider : Enemy {
 
         followDuration = Random.Range(followDurationRange.x, followDurationRange.y);
         idleDuration = Random.Range(idleDurationRange.x, idleDurationRange.y);
+        deathParticle = transform.Find("DeathParticles").GetComponent<ParticleSystem>();
+        shadow = transform.Find("SpriteContainer").Find("Shadow").GetComponent<SpriteRenderer>();
     }
     #endregion
 
@@ -132,6 +137,17 @@ public class Spider : Enemy {
     protected override void Attack() {
         GameObject go = Instantiate(projectile, transform.position, Quaternion.identity) as GameObject;
         go.GetComponent<SpiderProjectile>().Launch((PlayerController.Instance.transform.position - transform.position).normalized * projectileSpeed);
+    }
+
+    protected override void Die() {
+        base.Die();
+        Invoke("Explode", 2f);
+    }
+
+    private void Explode() {
+        deathParticle.Play();
+        sprite.enabled = false;
+        shadow.enabled = false;
     }
     #endregion
 }

@@ -12,6 +12,9 @@ public class Bat : Enemy {
     private float dirDuration;
 
     //private Vector2 playerDir;
+
+    private ParticleSystem deathParticle;
+    private SpriteRenderer shadow;
     #endregion
 
     #region Monobehaviour Methods
@@ -20,14 +23,12 @@ public class Bat : Enemy {
         state = EnemyState.Idle;
 
         dirTimer = dirDelayRange.y;
+        deathParticle = transform.Find("DeathParticles").GetComponent<ParticleSystem>();
+        shadow = transform.Find("SpriteContainer").Find("Shadow").GetComponent<SpriteRenderer>();
     }
     #endregion
 
     #region Methods
-    protected override void CheckState() {
-        //if ()
-    }
-
     protected override void Movement() {
         // TODO: check if player is close, attack him if yes
         // choose a random direction
@@ -60,6 +61,17 @@ public class Bat : Enemy {
         dirTimer += Time.deltaTime;
 
         Debug.DrawRay(transform.position, MainDebug.LerpVector2(prevDir, dir, dirTimer), Color.red);      //DEBUG: direction
+    }
+
+    protected override void Die() {
+        base.Die();
+        Invoke("Explode", 2f);
+    }
+
+    private void Explode() {
+        deathParticle.Play();
+        sprite.enabled = false;
+        shadow.enabled = false;
     }
     #endregion
 }

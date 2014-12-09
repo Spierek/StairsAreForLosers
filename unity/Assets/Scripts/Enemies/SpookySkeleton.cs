@@ -1,10 +1,14 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class SpookySkeleton : Enemy {
     #region Variables
     private float attackRange = 0.3f;
     private float attackDelay = 1f;
     private float attackTimer;
+
+    private ParticleSystem deathParticle;
+    private SpriteRenderer shadow;
     #endregion
 
     #region Monobehaviour Methods
@@ -12,6 +16,8 @@ public class SpookySkeleton : Enemy {
         base.Awake();
         state = EnemyState.Follow;
         attackTimer = attackDelay;
+        deathParticle = transform.Find("DeathParticles").GetComponent<ParticleSystem>();
+        shadow = spriteContainer.Find("Shadow").GetComponent<SpriteRenderer>();
     }
     #endregion
 
@@ -21,6 +27,9 @@ public class SpookySkeleton : Enemy {
     }
 
     protected override void Movement() {
+        // HACK: keep sprite container where it should be
+        spriteContainer.localPosition = Vector2.zero;
+        
         // get direction to player
         Vector2 playerDist = PlayerController.Instance.transform.position - transform.position;
         Vector2 dir = playerDist.normalized;
@@ -76,6 +85,17 @@ public class SpookySkeleton : Enemy {
 
     protected override void Attack() {
         PlayerController.Instance.Hit(1, transform.position, 0.7f);
+    }
+
+    protected override void Die() {
+        base.Die();
+        Invoke("Explode", 2f);
+    }
+
+    private void Explode() {
+        deathParticle.Play();
+        sprite.enabled = false;
+        shadow.enabled = false;
     }
     #endregion
 }
