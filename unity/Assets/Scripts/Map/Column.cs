@@ -5,6 +5,9 @@ public class Column : Entity {
     public int HP;
     public int ID;
 
+    public AudioSource shake;
+    public AudioSource hit;
+    
     private bool destroyed;
 
     private Animator animator;
@@ -25,6 +28,7 @@ public class Column : Entity {
             Map.instance.DemolishChunk(ID);
             Map.instance.columnsCount--;
             transform.DOShakePosition(10f, 0.1f);
+            shake.Play();
         }
     }
 
@@ -32,6 +36,8 @@ public class Column : Entity {
     public void Damage() {
         if (HP > 0) {
             HP--;
+            hit.pitch = UnityEngine.Random.Range(0.80f, 1.10f);
+            hit.Play();
             dustParticles.Play();         
         }
     }

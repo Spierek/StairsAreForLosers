@@ -14,6 +14,7 @@ public class Enemy : Entity {
     public float                health;
     public float                pushbackMod;
     public float                pushbackDuration;
+    public AudioSource          hit;
 
     protected EnemyState        state;
     protected Vector3           spriteScale;
@@ -83,6 +84,9 @@ public class Enemy : Entity {
         sprite.material.color = new Color(1f, 0.3f, 0.3f, 1f);
         sprite.material.DOColor(Color.white, 0.5f);
 
+        hit.pitch = UnityEngine.Random.Range(0.80f, 1.10f);
+        hit.Play();
+
         // apply damage
         health -= damage;
         if (health <= 0) {
@@ -105,6 +109,7 @@ public class Enemy : Entity {
         if (hitParticles.isStopped)
             hitParticles.Play();
 
+        Map.instance.enemiesCount--;
         DropPickup();
         Destroy(gameObject, 3f);
     }

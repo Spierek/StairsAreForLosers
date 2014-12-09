@@ -2,6 +2,7 @@
 
 public class HeartPickup : MonoBehaviour {
     #region Variables
+    public AudioSource grab;
     private ParticleSystem particles;
     private SpriteRenderer sprite;
     #endregion
@@ -16,6 +17,7 @@ public class HeartPickup : MonoBehaviour {
     #region Methods
     public void Grab() {
         particles.Play();
+        grab.Play();
         sprite.enabled = false;
         collider2D.enabled = false;
         Destroy(gameObject, 2f);
