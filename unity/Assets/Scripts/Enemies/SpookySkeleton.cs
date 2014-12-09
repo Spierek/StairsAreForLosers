@@ -2,7 +2,7 @@
 
 public class SpookySkeleton : Enemy {
     #region Variables
-    private float attackRange = 0.5f;
+    private float attackRange = 0.3f;
     private float attackDelay = 1f;
     private float attackTimer;
     #endregion
