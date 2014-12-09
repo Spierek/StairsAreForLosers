@@ -30,6 +30,9 @@ public class PlayerController : MonoBehaviour {
     private SpriteRenderer  sprite;
     private Hitbox          hitbox;
     private ParticleSystem  dashParticles;
+
+    private float restartInputDelay = 0.5f;
+    private float restartInputTimer;
     #endregion
 
     #region Monobehaviour Methods
@@ -52,15 +55,26 @@ public class PlayerController : MonoBehaviour {
             Movement();
             Rotation();
             Attack();
-        }
-        // DEBUG: healthbar
-        string hp = "";
-        for (int i = 0; i < health; i++) {
-            hp += "♥";
-        }
-        MainDebug.WriteLine("Health", hp);
 
-        // DEBUG: death
+            // DEBUG: healthbar
+            string hp = "";
+            for (int i = 0; i < health; i++) {
+                hp += "♥";
+            }
+            MainDebug.WriteLine("Health", hp);
+        }
+        else {
+            // FIXME: this shouldn't be here D:
+            MainDebug.WriteLine("YOU ARE DEAD");
+            MainDebug.WriteLine("PRESS ENTER TO RESTART");
+
+            if (restartInputTimer > restartInputDelay && (Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0))) {
+                Application.LoadLevel(Application.loadedLevel);
+            }
+            restartInputTimer += Time.deltaTime;
+        }
+
+        // DEBUG: killing the player
         if (Input.GetKeyDown(KeyCode.U)) {
             Die();
         }
