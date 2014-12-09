@@ -5,12 +5,14 @@ public class HeartPickup : MonoBehaviour {
     public AudioSource grab;
     private ParticleSystem particles;
     private SpriteRenderer sprite;
+    private SpriteRenderer shadow;
     #endregion
 
     #region Monobehaviour Methods
     void Awake () {
         particles = transform.Find("Particles").GetComponent<ParticleSystem>();
         sprite = transform.Find("Sprite").GetComponent<SpriteRenderer>();
+        shadow = transform.Find("Shadow").GetComponent<SpriteRenderer>();
     }
     #endregion
 
@@ -19,6 +21,7 @@ public class HeartPickup : MonoBehaviour {
         particles.Play();
         grab.Play();
         sprite.enabled = false;
+        shadow.enabled = false;
         collider2D.enabled = false;
         Destroy(gameObject, 2f);
     }
