@@ -42,6 +42,7 @@ public class Map : MonoBehaviour {
     private int structure = 2;
     public int higestFloor;
     public int bestFloor;
+    public int enemyMultiplier = 1;
 
     public float tileSpacing;
 
