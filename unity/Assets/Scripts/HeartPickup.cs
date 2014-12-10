@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using DG.Tweening;
+using UnityEngine;
 
 public class HeartPickup : MonoBehaviour {
     #region Variables
@@ -29,6 +30,16 @@ public class HeartPickup : MonoBehaviour {
     public void Spawn() {
         Vector2 force = Random.insideUnitCircle;
         rigidbody2D.AddForce(force.normalized * 3, ForceMode2D.Impulse);
+        Invoke("Fade", 7f);
+    }
+
+    private void Fade() {
+        sprite.material.DOFade(0, 3f);
+        Invoke("Remove", 3f);
+    }
+
+    private void Remove() {
+        Destroy(gameObject);
     }
     #endregion
 }
