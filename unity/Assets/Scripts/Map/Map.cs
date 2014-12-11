@@ -25,13 +25,14 @@ public class Map : MonoBehaviour {
     public int higestFloor;
     public int bestFloor;
     public int enemyMultiplier = 1;
+    public int floorcount = 0;
 
     public float tileSpacing;
 
     public int columnsCount;
     public int enemiesCount;
     public bool floorSetDone;
-
+    public int destroyedColumns;
 
     public Color GetIndexColor(int i) {
         int a = Mathf.FloorToInt((i % 5)/5);
@@ -124,7 +125,7 @@ public class Map : MonoBehaviour {
     
     void NextLevelFloors()
     {
-        //Remove 
+        //Remove k
         structure++;
         if (structure > 4) structure = 4;
 
@@ -145,7 +146,7 @@ public class Map : MonoBehaviour {
         MainDebug.WriteLine("Columns Count: " + columnsCount);
         MainDebug.WriteLine("Best Floor: " + bestFloor);
         MainDebug.WriteLine("Enemies Count: " + enemiesCount);
-        if (columnsCount == 0 && enemiesCount == 0 && !floorSetDone)
+        if (columnsCount == 0 && !floorSetDone)
         {
             Invoke("NextLevelFloors", 3f);
             floorSetDone = true;

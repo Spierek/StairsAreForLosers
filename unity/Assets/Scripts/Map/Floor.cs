@@ -47,7 +47,7 @@ public class Floor {
            
           }
         Map.instance.higestFloor++;
-        if(nr>0)
+        if (nr + Map.instance.floorcount > 1)
         {
             for(int i=0;i<12;i++)
             {
@@ -56,7 +56,7 @@ public class Floor {
                 possibleSpawns.Remove(pos);
             }
         }
-        if(nr>1)
+        if (nr + Map.instance.floorcount > 3)
         {
             for (int i = 0; i < (4 + (Map.instance.enemyMultiplier * 3)); i++)
             {
@@ -64,14 +64,14 @@ public class Floor {
                 entitiesMap[(int)pos.x, (int)pos.y] = 3;
                 possibleSpawns.Remove(pos);
             }
-            for (int i = 0; i < (3 + (Map.instance.enemyMultiplier * 2)); i++)
+            for (int i = 0; i < (1 + (Map.instance.enemyMultiplier * 2)); i++)
             {
                 Vector2 pos = possibleSpawns[UnityEngine.Random.Range(0, possibleSpawns.Count - 1)];
                 entitiesMap[(int)pos.x, (int)pos.y] = 5;
                 possibleSpawns.Remove(pos);
             }
         }
-        if (nr > 2)
+        if (nr + Map.instance.floorcount > 5)
         {
             for (int i = 0; i < (5 + (Map.instance.enemyMultiplier * 3)); i++)
             {
@@ -82,7 +82,9 @@ public class Floor {
 
         }
 
-        ToDebug();
+        if (nr % 3 == 0) Map.instance.enemyMultiplier++;
+        Map.instance.floorcount++;
+      //  ToDebug();
     }
 
     public void RewriteEntities(List<Vector2> entities, Floor floor)

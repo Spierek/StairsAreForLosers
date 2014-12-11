@@ -15,10 +15,11 @@ public class Column : Entity {
     private ParticleSystem dustParticles;
 
     void Awake () {
+        base.Awake();
         animator = GetComponent<Animator>();
         animator.SetFloat("HP", HP);
         dustParticles = transform.Find("DustParticles").GetComponent<ParticleSystem>();
-        sprite = transform.Find("Sprite").GetComponent<SpriteRenderer>();
+        sprite = transform.Find("SpriteContainer").GetComponent<SpriteRenderer>();
     }
     
     void Update () {
